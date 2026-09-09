@@ -39,6 +39,11 @@ def tool_media():
     return render_template("media_converter.html")
 
 
+@app.route("/google33d1629be034105c.html")
+def google_verification():
+    return "google-site-verification: google33d1629be034105c.html", 200, {"Content-Type": "text/html"}
+
+
 # --- API Routes ---
 
 @app.route("/api/health")
