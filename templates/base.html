@@ -32,7 +32,7 @@
   <meta name="twitter:image" content="{{ site_url }}/static/img/og-preview.png">
 
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=4.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=4.1">
   {% block extra_head %}{% endblock %}
 
   <!-- JSON-LD Structured Data Block -->
@@ -56,11 +56,11 @@
       </a>
 
       <!-- Direct Access Navigation Links -->
-      <ul class="nav-tools-menu">
-        <li><a href="{{ url_for('tool_qr') }}">QR Generator</a></li>
-        <li><a href="{{ url_for('tool_docx_to_pdf') }}">DOCX &rarr; PDF</a></li>
-        <li><a href="{{ url_for('tool_pdf_to_docx') }}">PDF &rarr; DOCX</a></li>
-        <li><a href="{{ url_for('tool_youtube_downloader') }}">Media Downloader</a></li>
+      <ul class="nav-links">
+        <li><a href="{{ url_for('tool_qr') }}" class="{% if request.path == url_for('tool_qr') %}active{% endif %}">QR Generator</a></li>
+        <li><a href="{{ url_for('tool_docx_to_pdf') }}" class="{% if request.path == url_for('tool_docx_to_pdf') %}active{% endif %}">DOCX &rarr; PDF</a></li>
+        <li><a href="{{ url_for('tool_pdf_to_docx') }}" class="{% if request.path == url_for('tool_pdf_to_docx') %}active{% endif %}">PDF &rarr; DOCX</a></li>
+        <li><a href="{{ url_for('tool_youtube_downloader') }}" class="{% if request.path in [url_for('tool_youtube_downloader'), url_for('tool_youtube_mp3'), url_for('tool_youtube_mp4')] %}active{% endif %}">Media Downloader</a></li>
       </ul>
     </div>
   </nav>
