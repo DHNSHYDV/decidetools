@@ -1,0 +1,391 @@
+{% extends "base.html" %}
+
+{% block title %}YT MP3/MP4 Downloader — Decide Solutions{% endblock %}
+
+{% block content %}
+<div class="tool-view-container">
+  <div class="tool-header">
+    <a href="{{ url_for('index') }}" class="back-link">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+      </svg>
+      <span>Back to Overview</span>
+    </a>
+    <h1>YT MP3/MP4 Downloader</h1>
+    <p>Download YouTube videos in MP4 format or save audio tracks directly as MP3 files.</p>
+  </div>
+
+  <div class="tool-box">
+    <!-- URL Input Group -->
+    <div class="form-group">
+      <label class="form-label" for="mediaUrl">Source Video URL</label>
+      <div style="display: flex; gap: 0.75rem;">
+        <input type="url" id="mediaUrl" class="form-input" placeholder="https://www.youtube.com/watch?v=..." required>
+        <button class="btn btn-secondary" id="btnInspect" type="button" style="white-space: nowrap; padding: 0.85rem 1.4rem;">
+          <div class="spinner" id="inspectSpinner"></div>
+          <span id="inspectText">Inspect URL</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Video Metadata Card (Initially Hidden) -->
+    <div id="metaCard" style="display: none; margin: 1.75rem 0; background: var(--bg-subtle); border: 1px solid var(--border-medium); border-radius: 0.85rem; padding: 1.25rem; align-items: center; gap: 1.35rem;">
+      <img id="metaThumb" src="" alt="Thumbnail" style="width: 140px; height: 80px; object-fit: cover; border-radius: 8px; flex-shrink: 0; background: #000; box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
+      <div style="overflow: hidden; flex: 1;">
+        <h3 id="metaTitle" style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.4rem; line-height: 1.35;">Video Title</h3>
+        <div style="font-size: 0.84rem; color: var(--text-tertiary); display: flex; gap: 1.25rem; flex-wrap: wrap;">
+          <span>Channel: <strong id="metaChannel" style="color: var(--text-secondary);">-</strong></span>
+          <span>Duration: <strong id="metaDuration" style="color: var(--text-secondary);">-</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Format & Quality / Resolution Options -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1.75rem;">
+      <div class="form-group">
+        <label class="form-label" for="targetFormat">Output Container Format</label>
+        <select id="targetFormat" class="form-select" onchange="toggleQualityOptions()">
+          <option value="mp3">MP3 Audio (Music / Speech)</option>
+          <option value="mp4">MP4 Video (Video + Audio)</option>
+        </select>
+      </div>
+      <div class="form-group" id="qualityGroup">
+        <label class="form-label" for="qualitySelect">Audio Bitrate</label>
+        <select id="qualitySelect" class="form-select">
+          <option value="320">320 kbps (Studio Master Quality)</option>
+          <option value="192" selected>192 kbps (Standard Quality)</option>
+          <option value="128">128 kbps (Compact / Speech)</option>
+        </select>
+      </div>
+      <div class="form-group" id="resolutionGroup" style="display: none;">
+        <label class="form-label" for="resolutionSelect">Video Resolution</label>
+        <select id="resolutionSelect" class="form-select">
+          <option value="best" selected>Best Available (Auto Max)</option>
+          <option value="1080">1080p (Full HD)</option>
+          <option value="720">720p (HD)</option>
+          <option value="480">480p (Standard)</option>
+          <option value="360">360p (Data Saver)</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="margin-top: 1.75rem;">
+      <button class="btn btn-full" id="btnDownload" type="button">
+        <div class="spinner" id="downloadSpinner"></div>
+        <span id="downloadText">Convert &amp; Download</span>
+      </button>
+    </div>
+
+    <div class="alert alert-error" id="mediaErrorBox"></div>
+    <div class="alert alert-success" id="mediaSuccessBox"></div>
+  </div>
+</div>
+
+<!-- Processing & Completion Overlay with 3D Cylinder Text Animation -->
+<div class="processing-overlay" id="processingOverlay">
+  <!-- State 1: Active Conversion with 3D Text Cylinder -->
+  <div class="processing-card" id="processingCard">
+    <div class="loader">
+      <div class="text"><span>CONVERTING</span></div>
+      <div class="text"><span>CONVERTING</span></div>
+      <div class="text"><span>CONVERTING</span></div>
+      <div class="text"><span>CONVERTING</span></div>
+      <div class="text"><span>CONVERTING</span></div>
+      <div class="text"><span>CONVERTING</span></div>
+      <div class="text"><span>CONVERTING</span></div>
+      <div class="text"><span>CONVERTING</span></div>
+      <div class="text"><span>CONVERTING</span></div>
+      <div class="line"></div>
+    </div>
+    <div class="processing-title" id="overlayTitle">Converting Media Stream...</div>
+    <div class="processing-subtitle" id="overlaySubtitle">Extracting audio &amp; merging formats via FFmpeg. Please wait.</div>
+    <div class="processing-timer" id="overlayTimer">Elapsed: 00:00</div>
+  </div>
+
+  <!-- State 2: Intentional Pop-Up Result Card -->
+  <div class="processing-card" id="mediaSuccessCard" style="display: none; animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+    <div style="width: 58px; height: 58px; border-radius: 50%; background: var(--emerald-subtle); border: 2px solid var(--emerald); display: flex; align-items: center; justify-content: center; color: #34D399; margin-bottom: 1.25rem;">
+      <svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+      </svg>
+    </div>
+    <h2 style="font-size: 1.4rem; font-weight: 800; margin-bottom: 0.35rem; color: #FFFFFF;">Media Ready to Save</h2>
+    <p style="font-size: 0.9rem; color: var(--text-tertiary); margin-bottom: 1.5rem;">Your media has been transcoded. Click below to save it to your device.</p>
+
+    <!-- Converted Media Badge -->
+    <div style="width: 100%; background: var(--bg-subtle); border: 1px solid var(--border-medium); border-radius: 0.85rem; padding: 1.15rem 1.35rem; display: flex; align-items: center; gap: 1rem; margin-bottom: 1.75rem; text-align: left;">
+      <div id="popMediaFormatIcon" style="width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.82rem; background: #7F1D1D; color: #FCA5A5; flex-shrink: 0;">MP4</div>
+      <div style="overflow: hidden; flex: 1;">
+        <div id="popMediaTitle" style="font-weight: 600; font-size: 0.96rem; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">video.mp4</div>
+        <div style="font-size: 0.82rem; color: var(--text-tertiary); margin-top: 3px;">
+          <span id="popMediaSize">0 MB</span> &bull; <span style="color: #38BDF8; font-weight: 600;">Ready to Save</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="width: 100%; display: flex; flex-direction: column; gap: 0.85rem;">
+      <button type="button" class="btn btn-full" id="btnMediaPopDownload">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+        </svg>
+        Download &amp; Save Video
+      </button>
+      <button type="button" class="btn btn-secondary btn-full" id="btnMediaPopClose">
+        Convert Another Video
+      </button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  const mediaUrl = document.getElementById('mediaUrl');
+  const btnInspect = document.getElementById('btnInspect');
+  const inspectSpinner = document.getElementById('inspectSpinner');
+  const inspectText = document.getElementById('inspectText');
+  const metaCard = document.getElementById('metaCard');
+  const metaThumb = document.getElementById('metaThumb');
+  const metaTitle = document.getElementById('metaTitle');
+  const metaChannel = document.getElementById('metaChannel');
+  const metaDuration = document.getElementById('metaDuration');
+  const targetFormat = document.getElementById('targetFormat');
+  const qualityGroup = document.getElementById('qualityGroup');
+  const qualitySelect = document.getElementById('qualitySelect');
+  const resolutionGroup = document.getElementById('resolutionGroup');
+  const resolutionSelect = document.getElementById('resolutionSelect');
+  const btnDownload = document.getElementById('btnDownload');
+  const downloadSpinner = document.getElementById('downloadSpinner');
+  const downloadText = document.getElementById('downloadText');
+  const mediaErrorBox = document.getElementById('mediaErrorBox');
+  const mediaSuccessBox = document.getElementById('mediaSuccessBox');
+
+  function clearAlerts() {
+    mediaErrorBox.style.display = 'none';
+    mediaErrorBox.textContent = '';
+    mediaSuccessBox.style.display = 'none';
+    mediaSuccessBox.textContent = '';
+  }
+
+  function toggleQualityOptions() {
+    if (targetFormat.value === 'mp4') {
+      qualityGroup.style.display = 'none';
+      resolutionGroup.style.display = 'block';
+    } else {
+      qualityGroup.style.display = 'block';
+      resolutionGroup.style.display = 'none';
+    }
+  }
+
+  btnInspect.addEventListener('click', async () => {
+    const url = mediaUrl.value.trim();
+    if (!url) {
+      mediaErrorBox.textContent = 'Please provide a valid media URL.';
+      mediaErrorBox.style.display = 'block';
+      return;
+    }
+
+    clearAlerts();
+    btnInspect.disabled = true;
+    inspectSpinner.style.display = 'inline-block';
+    inspectText.textContent = 'Inspecting...';
+
+    try {
+      const res = await fetch('/api/media/info', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url })
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to inspect media');
+
+      metaThumb.src = data.thumbnail || '';
+      metaTitle.textContent = data.title || 'Untitled';
+      metaChannel.textContent = data.uploader || 'N/A';
+      metaDuration.textContent = data.duration || 'N/A';
+      metaCard.style.display = 'flex';
+
+    } catch (err) {
+      mediaErrorBox.textContent = err.message;
+      mediaErrorBox.style.display = 'block';
+      metaCard.style.display = 'none';
+    } finally {
+      btnInspect.disabled = false;
+      inspectSpinner.style.display = 'none';
+      inspectText.textContent = 'Inspect URL';
+    }
+  });
+
+  const processingOverlay = document.getElementById('processingOverlay');
+  const processingCard = document.getElementById('processingCard');
+  const mediaSuccessCard = document.getElementById('mediaSuccessCard');
+  const overlayTitle = document.getElementById('overlayTitle');
+  const overlaySubtitle = document.getElementById('overlaySubtitle');
+  const overlayTimer = document.getElementById('overlayTimer');
+  const popMediaFormatIcon = document.getElementById('popMediaFormatIcon');
+  const popMediaTitle = document.getElementById('popMediaTitle');
+  const popMediaSize = document.getElementById('popMediaSize');
+  const btnMediaPopDownload = document.getElementById('btnMediaPopDownload');
+  const btnMediaPopClose = document.getElementById('btnMediaPopClose');
+
+  let timerInterval = null;
+  let lastMediaBlob = null;
+  let lastMediaFilename = '';
+
+  function showProcessingOverlay(title, subtitle) {
+    if (title) overlayTitle.textContent = title;
+    if (subtitle) overlaySubtitle.textContent = subtitle;
+
+    processingCard.style.display = 'flex';
+    mediaSuccessCard.style.display = 'none';
+    processingOverlay.style.display = 'flex';
+
+    let elapsed = 0;
+    overlayTimer.textContent = 'Elapsed: 00:00';
+    clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+      elapsed++;
+      const mins = String(Math.floor(elapsed / 60)).padStart(2, '0');
+      const secs = String(elapsed % 60).padStart(2, '0');
+      overlayTimer.textContent = `Elapsed: ${mins}:${secs}`;
+    }, 1000);
+  }
+
+  function hideProcessingOverlay() {
+    clearInterval(timerInterval);
+    processingOverlay.style.display = 'none';
+  }
+
+  function triggerBlobDownload(blob, filename) {
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => window.URL.revokeObjectURL(url), 15000);
+  }
+
+  btnMediaPopDownload.addEventListener('click', () => {
+    if (lastMediaBlob && lastMediaFilename) {
+      triggerBlobDownload(lastMediaBlob, lastMediaFilename);
+      btnMediaPopDownload.innerHTML = `
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+        </svg>
+        Saved to Downloads!
+      `;
+      btnMediaPopDownload.style.background = 'linear-gradient(180deg, #10B981 0%, #059669 100%)';
+    }
+  });
+
+  btnMediaPopClose.addEventListener('click', () => {
+    hideProcessingOverlay();
+    mediaUrl.value = '';
+    metaCard.style.display = 'none';
+    clearAlerts();
+  });
+
+  btnDownload.addEventListener('click', async () => {
+    const url = mediaUrl.value.trim();
+    if (!url) {
+      mediaErrorBox.textContent = 'Please enter a URL first.';
+      mediaErrorBox.style.display = 'block';
+      return;
+    }
+
+    // Reset popup button state
+    btnMediaPopDownload.innerHTML = `
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+      </svg>
+      Download &amp; Save Video
+    `;
+    btnMediaPopDownload.style.background = '';
+
+    clearAlerts();
+    btnDownload.disabled = true;
+    downloadSpinner.style.display = 'inline-block';
+    downloadText.textContent = 'Downloading...';
+
+    const isMp3 = targetFormat.value === 'mp3';
+    const subText = isMp3 
+      ? 'Extracting audio as MP3...' 
+      : 'Preparing video download...';
+
+    showProcessingOverlay('Downloading & Converting...', subText);
+
+    try {
+      const minAnimationDelay = new Promise(resolve => setTimeout(resolve, 2400));
+      const fetchRequest = fetch('/api/media/download', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          url,
+          format: targetFormat.value,
+          quality: qualitySelect.value,
+          resolution: resolutionSelect.value
+        })
+      });
+
+      const [res] = await Promise.all([fetchRequest, minAnimationDelay]);
+
+      if (!res.ok) {
+        let errMessage = 'Conversion failed';
+        try {
+          const errData = await res.json();
+          if (errData.error) errMessage = errData.error;
+        } catch (_) {}
+        throw new Error(errMessage);
+      }
+
+      const blob = await res.blob();
+      let filename = `decide_media.${targetFormat.value}`;
+      const disp = res.headers.get('Content-Disposition');
+      if (disp && disp.includes('filename=')) {
+        const match = disp.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+        if (match && match[1]) filename = match[1].replace(/['"]/g, '');
+      }
+
+      lastMediaBlob = blob;
+      lastMediaFilename = filename;
+
+      // Note: Do NOT auto-trigger browser download here!
+      // Wait for user to explicitly click "Download & Save Video" in the popup modal.
+
+      // Transition modal to intentional Completion Pop-Up Card
+      clearInterval(timerInterval);
+      processingCard.style.display = 'none';
+
+      popMediaTitle.textContent = filename;
+      popMediaSize.textContent = (blob.size / (1024 * 1024)).toFixed(2) + ' MB';
+
+      if (isMp3) {
+        popMediaFormatIcon.textContent = 'MP3';
+        popMediaFormatIcon.style.background = '#1E3A8A';
+        popMediaFormatIcon.style.color = '#93C5FD';
+      } else {
+        popMediaFormatIcon.textContent = 'MP4';
+        popMediaFormatIcon.style.background = '#7F1D1D';
+        popMediaFormatIcon.style.color = '#FCA5A5';
+      }
+
+      mediaSuccessCard.style.display = 'flex';
+
+      btnDownload.disabled = false;
+      downloadSpinner.style.display = 'none';
+      downloadText.textContent = 'Convert & Download';
+
+    } catch (err) {
+      hideProcessingOverlay();
+      mediaErrorBox.textContent = err.message;
+      mediaErrorBox.style.display = 'block';
+      btnDownload.disabled = false;
+      downloadSpinner.style.display = 'none';
+      downloadText.textContent = 'Convert & Download';
+    }
+  });
+</script>
+{% endblock %}

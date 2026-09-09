@@ -1,0 +1,277 @@
+{% extends "base.html" %}
+
+{% block title %}QR Generator — Decide Solutions{% endblock %}
+
+{% block content %}
+<div class="tool-view-container" style="max-width: 980px;">
+  <div class="tool-header">
+    <a href="{{ url_for('index') }}" class="back-link">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+      </svg>
+      <span>Back to Overview</span>
+    </a>
+    <h1>QR Generator</h1>
+    <p>Create custom QR codes for links, text, or Wi-Fi passwords and download as PNG or SVG.</p>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 2rem;">
+    <!-- Configuration Workspace -->
+    <div class="tool-box">
+      <!-- Segmented Pill Tabs -->
+      <div style="display: flex; background: var(--bg-subtle); padding: 0.35rem; border-radius: 0.75rem; margin-bottom: 1.75rem; border: 1px solid var(--border-subtle);">
+        <button type="button" class="tab-btn active" id="tabUrl" onclick="switchTab('url')">Web Link &amp; Text</button>
+        <button type="button" class="tab-btn" id="tabWifi" onclick="switchTab('wifi')">Wi-Fi Network</button>
+      </div>
+
+      <!-- Tab 1: URL / Text -->
+      <div id="panelUrl">
+        <div class="form-group">
+          <label class="form-label" for="qrText">URL or Raw Text Content</label>
+          <textarea id="qrText" class="form-textarea" rows="3" placeholder="https://decidegroup.com or plain text payload">https://decidegroup.com</textarea>
+        </div>
+      </div>
+
+      <!-- Tab 2: Wi-Fi -->
+      <div id="panelWifi" style="display: none;">
+        <div class="form-group">
+          <label class="form-label" for="wifiSsid">Network SSID (Name)</label>
+          <input type="text" id="wifiSsid" class="form-input" placeholder="e.g. Headquarters_5G">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="wifiPassword">Network Password</label>
+          <input type="text" id="wifiPassword" class="form-input" placeholder="WPA2/WPA3 Pre-Shared Key">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="wifiAuth">Security Protocol</label>
+          <select id="wifiAuth" class="form-select">
+            <option value="WPA">WPA / WPA2 / WPA3 (Standard)</option>
+            <option value="WEP">WEP (Legacy)</option>
+            <option value="nopass">Open Network (No Password)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Palette & Error Correction Section -->
+      <div style="border-top: 1px solid var(--border-subtle); padding-top: 1.5rem; margin-top: 1.5rem;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem;">
+          <div class="form-group">
+            <label class="form-label">Module Color</label>
+            <div style="display: flex; align-items: center; gap: 0.65rem;">
+              <input type="color" id="fillColor" value="#000000" style="border: none; width: 38px; height: 38px; border-radius: 8px; cursor: pointer; background: transparent; padding: 0;">
+              <input type="text" id="fillColorText" value="#000000" class="form-input" style="padding: 0.5rem 0.75rem; font-size: 0.88rem; font-family: var(--font-mono);">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Backdrop Color</label>
+            <div style="display: flex; align-items: center; gap: 0.65rem;">
+              <input type="color" id="backColor" value="#ffffff" style="border: none; width: 38px; height: 38px; border-radius: 8px; cursor: pointer; background: transparent; padding: 0;">
+              <input type="text" id="backColorText" value="#ffffff" class="form-input" style="padding: 0.5rem 0.75rem; font-size: 0.88rem; font-family: var(--font-mono);">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 0;">
+          <label class="form-label" for="errorCorrection">Redundancy &amp; Error Correction</label>
+          <select id="errorCorrection" class="form-select">
+            <option value="M">Medium (15% Recovery &mdash; Recommended)</option>
+            <option value="L">Low (7% Recovery &mdash; High Density)</option>
+            <option value="Q">Quartile (25% Recovery)</option>
+            <option value="H">High (30% Recovery &mdash; Best for Print)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Preview Stage & Export Actions -->
+    <div class="tool-box" style="display: flex; flex-direction: column; align-items: center; justify-content: space-between; text-align: center;">
+      <div style="width: 100%; display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
+        <span style="font-size: 0.82rem; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.08em;">Live Vector Display</span>
+        <span style="font-size: 0.76rem; color: #34D399; font-weight: 600; display: flex; align-items: center; gap: 0.35rem;">
+          <span style="width: 6px; height: 6px; background: #10B981; border-radius: 50%;"></span>
+          Real-time
+        </span>
+      </div>
+
+      <!-- Product Stage Card -->
+      <div id="previewStage" style="background: #FFFFFF; padding: 1.75rem; border-radius: 1.15rem; box-shadow: 0 16px 36px -8px rgba(0,0,0,0.65), inset 0 0 0 1px rgba(0,0,0,0.06); display: flex; align-items: center; justify-content: center; min-width: 250px; min-height: 250px; transition: background-color 0.2s ease;">
+        <img id="qrPreviewImg" src="" alt="QR Code Preview" style="max-width: 215px; height: auto; display: block; border-radius: 4px;">
+        <div id="previewSpinner" class="spinner" style="border-color: rgba(0,0,0,0.15); border-top-color: #4F46E5; width: 32px; height: 32px;"></div>
+      </div>
+
+      <!-- Export Actions -->
+      <div style="margin-top: 2.25rem; width: 100%; display: flex; flex-direction: column; gap: 0.85rem;">
+        <button type="button" class="btn btn-full" onclick="downloadQR('png')">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
+          Export Raster (PNG)
+        </button>
+        <button type="button" class="btn btn-secondary btn-full" onclick="downloadQR('svg')">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+          </svg>
+          Export Scalable Vector (SVG)
+        </button>
+      </div>
+
+      <div class="alert alert-error" id="qrErrorBox" style="width: 100%;"></div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<style>
+  .tab-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-tertiary);
+    padding: 0.55rem 1.15rem;
+    border-radius: 0.55rem;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    font-family: inherit;
+  }
+  .tab-btn:hover:not(.active) {
+    color: #FFFFFF;
+    background: rgba(255, 255, 255, 0.08);
+  }
+  .tab-btn.active {
+    background: var(--primary);
+    color: #FFFFFF;
+    box-shadow: 0 2px 8px rgba(79, 70, 229, 0.35);
+  }
+</style>
+
+<script>
+  let currentTab = 'url';
+  let debounceTimer = null;
+
+  function switchTab(tab) {
+    currentTab = tab;
+    document.getElementById('tabUrl').classList.toggle('active', tab === 'url');
+    document.getElementById('tabWifi').classList.toggle('active', tab === 'wifi');
+    document.getElementById('panelUrl').style.display = tab === 'url' ? 'block' : 'none';
+    document.getElementById('panelWifi').style.display = tab === 'wifi' ? 'block' : 'none';
+    triggerUpdate();
+  }
+
+  // Color sync
+  document.getElementById('fillColor').addEventListener('input', (e) => {
+    document.getElementById('fillColorText').value = e.target.value;
+    triggerUpdate();
+  });
+  document.getElementById('fillColorText').addEventListener('input', (e) => {
+    document.getElementById('fillColor').value = e.target.value;
+    triggerUpdate();
+  });
+  document.getElementById('backColor').addEventListener('input', (e) => {
+    document.getElementById('backColorText').value = e.target.value;
+    document.getElementById('previewStage').style.backgroundColor = e.target.value;
+    triggerUpdate();
+  });
+  document.getElementById('backColorText').addEventListener('input', (e) => {
+    document.getElementById('backColor').value = e.target.value;
+    document.getElementById('previewStage').style.backgroundColor = e.target.value;
+    triggerUpdate();
+  });
+
+  ['qrText', 'wifiSsid', 'wifiPassword', 'wifiAuth', 'errorCorrection'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', triggerUpdate);
+  });
+
+  function getPayload() {
+    if (currentTab === 'wifi') {
+      const ssid = document.getElementById('wifiSsid').value.trim();
+      const pass = document.getElementById('wifiPassword').value;
+      const auth = document.getElementById('wifiAuth').value;
+      if (!ssid) return "WIFI:T:WPA;S:DecideGuest;P:;;";
+      return `WIFI:T:${auth};S:${ssid};P:${pass};;`;
+    }
+    return document.getElementById('qrText').value.trim() || 'https://decidegroup.com';
+  }
+
+  function triggerUpdate() {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(updatePreview, 250);
+  }
+
+  async function updatePreview() {
+    const data = getPayload();
+    const fill_color = document.getElementById('fillColor').value;
+    const back_color = document.getElementById('backColor').value;
+    const ec = document.getElementById('errorCorrection').value;
+
+    const img = document.getElementById('qrPreviewImg');
+    const spinner = document.getElementById('previewSpinner');
+    const errBox = document.getElementById('qrErrorBox');
+    errBox.style.display = 'none';
+
+    try {
+      const res = await fetch('/api/qr/preview', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          data,
+          fill_color,
+          back_color,
+          error_correction: ec
+        })
+      });
+
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || 'Failed to generate preview');
+
+      img.src = json.data_url;
+      img.style.display = 'block';
+      spinner.style.display = 'none';
+    } catch (err) {
+      errBox.textContent = err.message;
+      errBox.style.display = 'block';
+    }
+  }
+
+  async function downloadQR(format) {
+    const data = getPayload();
+    const fill_color = document.getElementById('fillColor').value;
+    const back_color = document.getElementById('backColor').value;
+    const ec = document.getElementById('errorCorrection').value;
+
+    try {
+      const res = await fetch('/api/qr/download', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          data,
+          fill_color,
+          back_color,
+          error_correction: ec,
+          format: format
+        })
+      });
+
+      if (!res.ok) throw new Error('Download failed');
+
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `decide_qr_${Date.now()}.${format}`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      alert('Error downloading QR code: ' + err.message);
+    }
+  }
+
+  // Initial render
+  window.addEventListener('DOMContentLoaded', updatePreview);
+</script>
+{% endblock %}

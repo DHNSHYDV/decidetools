@@ -1,0 +1,401 @@
+{% extends "base.html" %}
+
+{% block title %}Document Converter — Decide Solutions{% endblock %}
+
+{% block content %}
+<div class="tool-view-container">
+  <div class="tool-header">
+    <a href="{{ url_for('index') }}" class="back-link">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+      </svg>
+      <span>Back to Overview</span>
+    </a>
+    <h1>Document Converter</h1>
+    <p>Easily convert Word documents (.docx) to PDF, or convert PDF files back to editable Word.</p>
+  </div>
+
+  <div class="tool-box">
+    <!-- Interactive Dropzone -->
+    <div class="dropzone-container" id="dropzone">
+      <div class="dropzone-icon-box">
+        <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+        </svg>
+      </div>
+      <div style="font-weight: 700; font-size: 1.1rem; color: var(--text-primary); margin-bottom: 0.35rem;">
+        Drop your document here, or <span style="color: #818CF8; text-decoration: underline; text-underline-offset: 3px;">browse</span>
+      </div>
+      <div style="color: var(--text-tertiary); font-size: 0.86rem;">
+        Supports .docx, .doc, and .pdf documents up to 50 MB
+      </div>
+      <input type="file" id="fileInput" accept=".docx,.doc,.pdf" style="display: none;">
+    </div>
+
+    <!-- Active File Preview Card -->
+    <div id="filePreview" style="display: none; margin-top: 1.5rem; background: var(--bg-subtle); border: 1px solid var(--border-medium); border-radius: 0.85rem; padding: 1.15rem 1.35rem; align-items: center; justify-content: space-between;">
+      <div style="display: flex; align-items: center; gap: 1rem; overflow: hidden;">
+        <div id="fileTypeIcon" style="width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.8rem; background: #1e3a8a; color: #93c5fd; flex-shrink: 0;">DOCX</div>
+        <div style="overflow: hidden;">
+          <div id="fileName" style="font-size: 0.96rem; font-weight: 600; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 420px;">file.docx</div>
+          <div style="font-size: 0.82rem; color: var(--text-tertiary); margin-top: 3px; display: flex; align-items: center; gap: 0.5rem;">
+            <span id="fileSize">0 KB</span>
+            <span>&bull;</span>
+            <span id="conversionRoute" style="color: #38BDF8; font-weight: 600;">DOCX &rarr; PDF</span>
+          </div>
+        </div>
+      </div>
+      <button id="btnRemove" style="background: rgba(255,255,255,0.05); border: 1px solid var(--border-subtle); color: var(--text-muted); cursor: pointer; padding: 6px; border-radius: 8px; transition: all 0.15s ease;" title="Remove file">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <div style="margin-top: 1.75rem;">
+      <button class="btn btn-full" id="btnConvert" disabled>
+        <div class="spinner" id="btnSpinner"></div>
+        <span id="btnText">Select a Document to Begin</span>
+      </button>
+    </div>
+
+    <div class="alert alert-error" id="errorBox"></div>
+    <div class="alert alert-success" id="successBox"></div>
+  </div>
+</div>
+
+<!-- Processing & Completion Overlay with Dominoes Animation -->
+<div class="processing-overlay" id="processingOverlay">
+  <!-- State 1: Active Conversion with Dominoes -->
+  <div class="processing-card" id="processingCard">
+    <div class="dominos-wrapper">
+      <div class="dominos-spinner">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+    <div class="processing-title" id="overlayTitle">Converting Document...</div>
+    <div class="processing-subtitle" id="overlaySubtitle">Rendering layout &amp; converting pages. Please wait.</div>
+    <div class="processing-timer" id="overlayTimer">Elapsed: 00:00</div>
+  </div>
+
+  <!-- State 2: Intentional Pop-Up Result Card -->
+  <div class="processing-card" id="successCard" style="display: none; animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+    <div style="width: 58px; height: 58px; border-radius: 50%; background: var(--emerald-subtle); border: 2px solid var(--emerald); display: flex; align-items: center; justify-content: center; color: #34D399; margin-bottom: 1.25rem;">
+      <svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+      </svg>
+    </div>
+    <h2 style="font-size: 1.4rem; font-weight: 800; margin-bottom: 0.35rem; color: #FFFFFF;">Conversion Complete</h2>
+    <p style="font-size: 0.9rem; color: var(--text-tertiary); margin-bottom: 1.5rem;">Your document is ready. Click below to save it to your device.</p>
+
+    <!-- Converted Document Badge -->
+    <div style="width: 100%; background: var(--bg-subtle); border: 1px solid var(--border-medium); border-radius: 0.85rem; padding: 1.15rem 1.35rem; display: flex; align-items: center; gap: 1rem; margin-bottom: 1.75rem; text-align: left;">
+      <div id="popFileTypeIcon" style="width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.82rem; background: #7F1D1D; color: #FCA5A5; flex-shrink: 0;">PDF</div>
+      <div style="overflow: hidden; flex: 1;">
+        <div id="popFileName" style="font-weight: 600; font-size: 0.96rem; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">document.pdf</div>
+        <div style="font-size: 0.82rem; color: var(--text-tertiary); margin-top: 3px;">
+          <span id="popFileSize">0 KB</span> &bull; <span style="color: #38BDF8; font-weight: 600;">Ready to Save</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="width: 100%; display: flex; flex-direction: column; gap: 0.85rem;">
+      <button type="button" class="btn btn-full" id="btnPopDownload">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+        </svg>
+        Download &amp; Save Document
+      </button>
+      <button type="button" class="btn btn-secondary btn-full" id="btnPopClose">
+        Convert Another Document
+      </button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  const dropzone = document.getElementById('dropzone');
+  const fileInput = document.getElementById('fileInput');
+  const filePreview = document.getElementById('filePreview');
+  const fileName = document.getElementById('fileName');
+  const fileSize = document.getElementById('fileSize');
+  const fileTypeIcon = document.getElementById('fileTypeIcon');
+  const conversionRoute = document.getElementById('conversionRoute');
+  const btnRemove = document.getElementById('btnRemove');
+  const btnConvert = document.getElementById('btnConvert');
+  const btnText = document.getElementById('btnText');
+  const btnSpinner = document.getElementById('btnSpinner');
+  const errorBox = document.getElementById('errorBox');
+  const successBox = document.getElementById('successBox');
+
+  let selectedFile = null;
+
+  function formatBytes(bytes) {
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+  }
+
+  function clearAlerts() {
+    errorBox.style.display = 'none';
+    errorBox.textContent = '';
+    successBox.style.display = 'none';
+    successBox.textContent = '';
+  }
+
+  function handleFile(file) {
+    clearAlerts();
+    if (!file) return;
+
+    const ext = file.name.slice(file.name.lastIndexOf('.')).toLowerCase();
+    if (!['.docx', '.doc', '.pdf'].includes(ext)) {
+      errorBox.textContent = "Unsupported format. Please select a valid .docx, .doc, or .pdf file.";
+      errorBox.style.display = 'block';
+      return;
+    }
+
+    selectedFile = file;
+    fileName.textContent = file.name;
+    fileSize.textContent = formatBytes(file.size);
+
+    if (ext === '.pdf') {
+      fileTypeIcon.textContent = 'PDF';
+      fileTypeIcon.style.background = '#7F1D1D';
+      fileTypeIcon.style.color = '#FCA5A5';
+      conversionRoute.textContent = 'PDF \u2192 Word (DOCX)';
+      btnText.textContent = 'Convert PDF to Word (DOCX)';
+    } else {
+      fileTypeIcon.textContent = 'DOCX';
+      fileTypeIcon.style.background = '#1E3A8A';
+      fileTypeIcon.style.color = '#93C5FD';
+      conversionRoute.textContent = 'Word \u2192 PDF';
+      btnText.textContent = 'Convert Word to PDF';
+    }
+
+    dropzone.style.display = 'none';
+    filePreview.style.display = 'flex';
+    btnConvert.disabled = false;
+  }
+
+  function resetUI() {
+    selectedFile = null;
+    fileInput.value = '';
+    dropzone.style.display = 'block';
+    filePreview.style.display = 'none';
+    btnConvert.disabled = true;
+    btnSpinner.style.display = 'none';
+    btnText.textContent = 'Select a Document to Begin';
+  }
+
+  dropzone.addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', (e) => {
+    if (e.target.files.length > 0) handleFile(e.target.files[0]);
+  });
+
+  ['dragenter', 'dragover'].forEach(evt => {
+    dropzone.addEventListener(evt, (e) => {
+      e.preventDefault();
+      dropzone.classList.add('dragover');
+    });
+  });
+
+  ['dragleave', 'drop'].forEach(evt => {
+    dropzone.addEventListener(evt, (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('dragover');
+    });
+  });
+
+  dropzone.addEventListener('drop', (e) => {
+    if (e.dataTransfer && e.dataTransfer.files.length > 0) {
+      handleFile(e.dataTransfer.files[0]);
+    }
+  });
+
+  btnRemove.addEventListener('click', () => {
+    resetUI();
+    clearAlerts();
+  });
+
+  const processingOverlay = document.getElementById('processingOverlay');
+  const processingCard = document.getElementById('processingCard');
+  const successCard = document.getElementById('successCard');
+  const overlayTitle = document.getElementById('overlayTitle');
+  const overlaySubtitle = document.getElementById('overlaySubtitle');
+  const overlayTimer = document.getElementById('overlayTimer');
+  const popFileTypeIcon = document.getElementById('popFileTypeIcon');
+  const popFileName = document.getElementById('popFileName');
+  const popFileSize = document.getElementById('popFileSize');
+  const btnPopDownload = document.getElementById('btnPopDownload');
+  const btnPopClose = document.getElementById('btnPopClose');
+
+  let timerInterval = null;
+  let lastConvertedBlob = null;
+  let lastConvertedFilename = '';
+
+  function showProcessingOverlay(title, subtitle) {
+    if (title) overlayTitle.textContent = title;
+    if (subtitle) overlaySubtitle.textContent = subtitle;
+
+    processingCard.style.display = 'flex';
+    successCard.style.display = 'none';
+    processingOverlay.style.display = 'flex';
+
+    let elapsed = 0;
+    overlayTimer.textContent = 'Elapsed: 00:00';
+    clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+      elapsed++;
+      const mins = String(Math.floor(elapsed / 60)).padStart(2, '0');
+      const secs = String(elapsed % 60).padStart(2, '0');
+      overlayTimer.textContent = `Elapsed: ${mins}:${secs}`;
+    }, 1000);
+  }
+
+  function hideProcessingOverlay() {
+    clearInterval(timerInterval);
+    processingOverlay.style.display = 'none';
+  }
+
+  function triggerBlobDownload(blob, filename) {
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => window.URL.revokeObjectURL(url), 15000);
+  }
+
+  btnPopDownload.addEventListener('click', () => {
+    if (lastConvertedBlob && lastConvertedFilename) {
+      triggerBlobDownload(lastConvertedBlob, lastConvertedFilename);
+      btnPopDownload.innerHTML = `
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+        </svg>
+        Saved to Downloads!
+      `;
+      btnPopDownload.style.background = '#10B981';
+      setTimeout(() => {
+        btnPopDownload.innerHTML = `
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
+          Download &amp; Save Document
+        `;
+        btnPopDownload.style.background = '';
+      }, 3500);
+    }
+  });
+
+  btnPopClose.addEventListener('click', () => {
+    hideProcessingOverlay();
+    resetUI();
+    clearAlerts();
+  });
+
+  btnConvert.addEventListener('click', async () => {
+    if (!selectedFile) return;
+
+    btnPopDownload.innerHTML = `
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+      </svg>
+      Download &amp; Save Document
+    `;
+    btnPopDownload.style.background = '';
+
+    clearAlerts();
+    btnConvert.disabled = true;
+    btnSpinner.style.display = 'inline-block';
+    btnText.textContent = 'Converting Document...';
+
+    const ext = selectedFile.name.slice(selectedFile.name.lastIndexOf('.')).toLowerCase();
+    const isDocxToPdf = ext !== '.pdf';
+    const routeTitle = isDocxToPdf ? 'Converting Word to PDF...' : 'Converting PDF to Word...';
+    const routeSub = 'Please wait while your document is being converted.';
+
+    showProcessingOverlay(routeTitle, routeSub);
+
+    const formData = new FormData();
+    formData.append('file', selectedFile);
+
+    try {
+      const minAnimationDelay = new Promise(resolve => setTimeout(resolve, 2400));
+      const fetchRequest = fetch('/api/convert', {
+        method: 'POST',
+        body: formData
+      });
+
+      const [response] = await Promise.all([fetchRequest, minAnimationDelay]);
+
+      if (!response.ok) {
+        let errMessage = 'Conversion failed';
+        try {
+          const errData = await response.json();
+          if (errData.error) errMessage = errData.error;
+        } catch (_) {}
+        throw new Error(errMessage);
+      }
+
+      const blob = await response.blob();
+      let downloadName = 'converted_document';
+      const disp = response.headers.get('Content-Disposition');
+      if (disp && disp.includes('filename=')) {
+        const match = disp.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+        if (match && match[1]) downloadName = match[1].replace(/['"]/g, '');
+      } else {
+        const stem = selectedFile.name.substring(0, selectedFile.name.lastIndexOf('.'));
+        downloadName = isDocxToPdf ? `${stem}.pdf` : `${stem}.docx`;
+      }
+
+      lastConvertedBlob = blob;
+      lastConvertedFilename = downloadName;
+
+      // Transition modal to intentional Completion Pop-Up Card
+      clearInterval(timerInterval);
+      processingCard.style.display = 'none';
+
+      popFileName.textContent = downloadName;
+      popFileSize.textContent = formatBytes(blob.size);
+
+      if (downloadName.toLowerCase().endsWith('.pdf')) {
+        popFileTypeIcon.textContent = 'PDF';
+        popFileTypeIcon.style.background = '#7F1D1D';
+        popFileTypeIcon.style.color = '#FCA5A5';
+      } else {
+        popFileTypeIcon.textContent = 'DOCX';
+        popFileTypeIcon.style.background = '#1E3A8A';
+        popFileTypeIcon.style.color = '#93C5FD';
+      }
+
+      successCard.style.display = 'flex';
+
+      btnConvert.disabled = false;
+      btnSpinner.style.display = 'none';
+      btnText.textContent = 'Convert Another Document';
+
+    } catch (err) {
+      hideProcessingOverlay();
+      errorBox.textContent = err.message || 'An error occurred during conversion';
+      errorBox.style.display = 'block';
+      btnConvert.disabled = false;
+      btnSpinner.style.display = 'none';
+      btnText.textContent = 'Retry Conversion';
+    }
+  });
+</script>
+{% endblock %}

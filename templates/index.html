@@ -1,0 +1,233 @@
+{% extends "base.html" %}
+
+{% block title %}Decide Solutions — Free Online Tools{% endblock %}
+
+{% block content %}
+<div class="hero">
+  <!-- Circular Segmented Hero Tabs on Top -->
+  <div class="cir-tabs-wrapper">
+    <div class="cir-tabs" role="tablist">
+      <input type="radio" name="hero-tab" id="tab-all" class="cir-tabs__r" checked onchange="switchHeroTool('all')">
+      <label for="tab-all" class="cir-tabs__t">All Tools</label>
+
+      <input type="radio" name="hero-tab" id="tab-media" class="cir-tabs__r" onchange="switchHeroTool('media')">
+      <label for="tab-media" class="cir-tabs__t">YT Downloader</label>
+
+      <input type="radio" name="hero-tab" id="tab-qr" class="cir-tabs__r" onchange="switchHeroTool('qr')">
+      <label for="tab-qr" class="cir-tabs__t">QR Generator</label>
+
+      <input type="radio" name="hero-tab" id="tab-doc" class="cir-tabs__r" onchange="switchHeroTool('doc')">
+      <label for="tab-doc" class="cir-tabs__t">Document Converter</label>
+    </div>
+  </div>
+
+  <h1>Free, Fast &amp; Simple Tools</h1>
+  <p>Convert documents, download YouTube video or audio, and create custom QR codes directly in your browser.</p>
+</div>
+
+<!-- Dynamic Horizontal Tool Explanation Box -->
+<div id="toolExplBox" class="tool-expl-box">
+  <div class="tool-expl-header">
+    <h3 class="tool-expl-title" id="explTitle">All-In-One Digital Tool Suite</h3>
+    <span class="tool-expl-badge" id="explBadge">Overview</span>
+  </div>
+  <p class="tool-expl-desc" id="explDesc">
+    A unified suite of high-performance file and media tools. All processes run in-memory with zero tracking. Select any tool from the tabs above to inspect its features or click a card below to launch.
+  </p>
+  <div class="tool-expl-footer">
+    <div class="tool-expl-features" id="explFeatures">
+      <span class="expl-pill">✓ 3 Production Tools</span>
+      <span class="expl-pill">✓ High-Speed Processing</span>
+      <span class="expl-pill">✓ 100% In-Memory Privacy</span>
+      <span class="expl-pill">✓ No Sign-up Required</span>
+    </div>
+    <a href="#cardsSection" id="explActionBtn" class="tool-expl-btn">
+      <span>Browse Below</span>
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+      </svg>
+    </a>
+  </div>
+</div>
+
+<div class="custom-cards-grid" id="cardsSection">
+  <!-- Card 1: YT MP3/MP4 Downloader (3D Cyber Holographic Card) -->
+  <a href="{{ url_for('tool_media') }}" class="card-wrapper" data-tool="media" title="Launch YT MP3/MP4 Downloader">
+    <div class="container-cyber noselect">
+      <div class="canvas">
+        <div class="tracker tr-1"></div>
+        <div class="tracker tr-2"></div>
+        <div class="tracker tr-3"></div>
+        <div class="tracker tr-4"></div>
+        <div class="tracker tr-5"></div>
+        <div class="tracker tr-6"></div>
+        <div class="tracker tr-7"></div>
+        <div class="tracker tr-8"></div>
+        <div class="tracker tr-9"></div>
+        <div class="tracker tr-10"></div>
+        <div class="tracker tr-11"></div>
+        <div class="tracker tr-12"></div>
+        <div class="tracker tr-13"></div>
+        <div class="tracker tr-14"></div>
+        <div class="tracker tr-15"></div>
+        <div class="tracker tr-16"></div>
+        <div class="tracker tr-17"></div>
+        <div class="tracker tr-18"></div>
+        <div class="tracker tr-19"></div>
+        <div class="tracker tr-20"></div>
+        <div class="tracker tr-21"></div>
+        <div class="tracker tr-22"></div>
+        <div class="tracker tr-23"></div>
+        <div class="tracker tr-24"></div>
+        <div class="tracker tr-25"></div>
+        <div id="card">
+          <div class="card-glare"></div>
+          <div class="cyber-lines">
+            <span></span><span></span><span></span><span></span>
+          </div>
+          <div class="corner-elements">
+            <span></span><span></span><span></span><span></span>
+          </div>
+          <div class="scan-line"></div>
+          <p id="prompt">YT DOWNLOAD</p>
+          <div class="title">MP3 / MP4</div>
+          <div class="glowing-elements">
+            <div class="glow-1"></div>
+            <div class="glow-2"></div>
+            <div class="glow-3"></div>
+          </div>
+          <div class="subtitle">
+            YOUTUBE<span class="highlight">MEDIA</span>
+          </div>
+          <div class="card-particles">
+            <span></span><span></span><span></span><span></span><span></span><span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </a>
+
+  <!-- Card 2: QR Generator (Modern Purple Card) -->
+  <a href="{{ url_for('tool_qr') }}" class="card-wrapper" data-tool="qr" title="Launch QR Generator">
+    <div class="card-purple">
+      <div class="card-border-top"></div>
+      <div class="img">
+        <svg width="38" height="38" fill="none" stroke="#ffffff" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+        </svg>
+      </div>
+      <span>QR Generator</span>
+      <p class="job">URL &bull; Wi-Fi &bull; SVG</p>
+      <button type="button">Create QR</button>
+    </div>
+  </a>
+
+  <!-- Card 3: Document Converter (Neumorphic Card) -->
+  <a href="{{ url_for('tool_converter') }}" class="card-wrapper" data-tool="doc" title="Launch Document Converter">
+    <div class="card-neo">
+      <div class="img">
+        <div class="save">
+          <svg class="svg" viewBox="0 0 24 24" fill="none" stroke="#6b64f3" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+      </div>
+      <div class="text">
+        <span class="h3">Document Converter</span>
+        <p class="p">DOCX &harr; PDF files</p>
+        <div class="icon-box">
+          <svg width="17" height="17" fill="none" stroke="#9198e5" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          <span class="span">Convert Now</span>
+        </div>
+      </div>
+    </div>
+  </a>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  const toolDetails = {
+    all: {
+      badge: 'Overview',
+      title: 'All-In-One Digital Tool Suite',
+      desc: 'A unified suite of high-performance file and media tools. All processes run in-memory with zero tracking. Select any tool from the tabs above to inspect its features or click a card below to launch.',
+      features: ['✓ 3 Production Tools', '✓ High-Speed Processing', '✓ 100% In-Memory Privacy', '✓ No Sign-up Required'],
+      btnText: 'Browse Below',
+      btnHref: '#cardsSection',
+      btnIcon: `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>`
+    },
+    media: {
+      badge: 'YT MP3/MP4 Downloader',
+      title: 'YouTube Video & Audio Stream Extractor',
+      desc: 'Download YouTube videos in crisp Full HD (1080p, 720p, 480p, 360p) MP4 video or extract studio-quality 320kbps MP3 audio tracks via native FFmpeg. Features live video URL inspection and zero automatic downloads.',
+      features: ['✓ 320kbps Studio MP3', '✓ Up to 1080p Full HD MP4', '✓ Live Thumbnail & Title Inspector', '✓ Explicit Save Control'],
+      btnText: 'Open YT Downloader',
+      btnHref: "{{ url_for('tool_media') }}",
+      btnIcon: `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>`
+    },
+    qr: {
+      badge: 'QR Generator',
+      title: 'Custom Real-Time QR Code Studio',
+      desc: 'Create production-ready QR codes with instantaneous client-side preview as you type. Easily encode website URLs, text notes, or full Wi-Fi network credentials with auto-connect. Export as PNG or scalable vector SVG.',
+      features: ['✓ Real-Time Live Preview', '✓ Wi-Fi WPA/WPA2 Network Credentials', '✓ Custom Color Palettes', '✓ Scalable Vector SVG & PNG'],
+      btnText: 'Open QR Generator',
+      btnHref: "{{ url_for('tool_qr') }}",
+      btnIcon: `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>`
+    },
+    doc: {
+      badge: 'Document Converter',
+      title: 'Bidirectional Word (.docx) & PDF Converter',
+      desc: 'Convert Microsoft Word (.docx/.doc) files to PDF, or transform PDF documents back into fully editable Word documents. Accurately preserves typographic hierarchy, complex tabular layouts, margins, and vector styling.',
+      features: ['✓ Word (.docx) to PDF (LibreOffice)', '✓ PDF to Editable Word (pdf2docx)', '✓ Preserves Tables & Margins', '✓ Fast In-Memory Processing'],
+      btnText: 'Open Document Converter',
+      btnHref: "{{ url_for('tool_converter') }}",
+      btnIcon: `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>`
+    }
+  };
+
+  function switchHeroTool(toolId) {
+    const data = toolDetails[toolId] || toolDetails.all;
+    const box = document.getElementById('toolExplBox');
+    
+    // Smooth fade transition
+    box.style.opacity = '0.4';
+    box.style.transform = 'translateY(4px)';
+
+    setTimeout(() => {
+      document.getElementById('explBadge').textContent = data.badge;
+      document.getElementById('explTitle').textContent = data.title;
+      document.getElementById('explDesc').textContent = data.desc;
+
+      const featContainer = document.getElementById('explFeatures');
+      featContainer.innerHTML = data.features.map(f => `<span class="expl-pill">${f}</span>`).join('');
+
+      const actionBtn = document.getElementById('explActionBtn');
+      actionBtn.href = data.btnHref;
+      actionBtn.innerHTML = `<span>${data.btnText}</span> ${data.btnIcon}`;
+
+      box.style.opacity = '1';
+      box.style.transform = 'translateY(0)';
+    }, 120);
+
+    // Filter cards below
+    const cards = document.querySelectorAll('.card-wrapper');
+    cards.forEach(card => {
+      if (toolId === 'all' || card.dataset.tool === toolId) {
+        card.style.display = 'block';
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(10px)';
+        card.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
+        setTimeout(() => {
+          card.style.opacity = '1';
+          card.style.transform = 'translateY(0)';
+        }, 10);
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+</script>
+{% endblock %}
