@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}Terms of Service — Decide Solutions{% endblock %}
+{% block meta_description %}Review the Terms of Service for Decide Solutions. Acceptable use policies, copyright guidelines, disclaimer of warranties, and service terms.{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "{{ canonical_url }}#terms",
+      "url": "{{ canonical_url }}",
+      "name": "Terms of Service — Decide Solutions",
+      "description": "Decide Solutions Terms of Service, acceptable use guidelines, and copyright policy.",
+      "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "{{ site_url }}/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Terms of Service",
+            "item": "{{ canonical_url }}"
+          }
+        ]
+      }
+    }
+  ]
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="tool-view-container">
+  <div class="tool-header">
+    <a href="{{ url_for('index') }}" class="back-link">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+      </svg>
+      <span>Back to Overview</span>
+    </a>
+    <h1>Terms of Service</h1>
+    <p>Last updated: September 2026 &bull; Please read carefully before using our services</p>
+  </div>
+
+  <div class="seo-content-section" style="margin-top: 1rem;">
+    <div class="seo-card" style="margin-bottom: 2rem;">
+      <h2>1. Acceptance of Terms</h2>
+      <p style="color: var(--text-secondary); line-height: 1.75;">
+        By accessing or using Decide Solutions ("the Service", "the Platform", or "we"), you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our website or online tools.
+      </p>
+    </div>
+
+    <div class="seo-card" style="margin-bottom: 2rem;">
+      <h2>2. Permitted Use &amp; Copyright Compliance</h2>
+      <p style="color: var(--text-secondary); line-height: 1.75;">
+        Decide Solutions provides utility software for document format transformation, QR generation, and multimedia stream transcoding. You agree to use our services solely for lawful purposes:
+      </p>
+      <ul style="padding-left: 1.25rem; color: var(--text-secondary); line-height: 1.8; margin-top: 1rem;">
+        <li><strong>Authorized Media Downloads:</strong> You may only use our media converter utilities to download, convert, or archive content that you own, content in the public domain, content distributed under an open license (such as Creative Commons), or content for which you have received express written authorization from the copyright holder.</li>
+        <li><strong>Prohibition of Copyright Infringement:</strong> You must not use our tools to infringe upon the intellectual property rights, trademarks, or copyrights of any individual or corporate entity.</li>
+        <li><strong>Document Ownership:</strong> You certify that any documents uploaded for DOCX or PDF conversion are your own work or that you possess legal license and permission to process them.</li>
+      </ul>
+    </div>
+
+    <div class="seo-card" style="margin-bottom: 2rem;">
+      <h2>3. Prohibited Conduct</h2>
+      <p style="color: var(--text-secondary); line-height: 1.75;">
+        When using Decide Solutions, you agree NOT to:
+      </p>
+      <ul style="padding-left: 1.25rem; color: var(--text-secondary); line-height: 1.8; margin-top: 1rem;">
+        <li>Upload files containing computer viruses, trojans, ransomware, or malicious script payloads.</li>
+        <li>Attempt to overload, flood, or launch denial-of-service (DoS) attacks against our conversion endpoints.</li>
+        <li>Circumvent or tamper with rate limits, file size caps, or server security mechanisms.</li>
+        <li>Use automated scrapers, botnets, or unauthorized API crawlers to abuse computing resources.</li>
+      </ul>
+    </div>
+
+    <div class="seo-card" style="margin-bottom: 2rem;">
+      <h2>4. Disclaimer of Warranties</h2>
+      <p style="color: var(--text-secondary); line-height: 1.75;">
+        Decide Solutions is provided on an "AS IS" and "AS AVAILABLE" basis without warranties of any kind, whether express or implied. While we strive to maintain 99.9% uptime and accurate document fidelity, we do not warrant that the service will be uninterrupted, error-free, or that conversions will perfectly retain every intricate font or layout characteristic.
+      </p>
+    </div>
+
+    <div class="seo-card" style="margin-bottom: 2rem;">
+      <h2>5. Limitation of Liability</h2>
+      <p style="color: var(--text-secondary); line-height: 1.75;">
+        To the maximum extent permitted by applicable law, Decide Solutions and its operators shall not be liable for any indirect, incidental, special, consequential, or punitive damages resulting from your use of, or inability to use, our services or converted files.
+      </p>
+    </div>
+
+    <div class="seo-card">
+      <h2>6. Modifications to Service</h2>
+      <p style="color: var(--text-secondary); line-height: 1.75;">
+        We reserve the right to update, modify, or discontinue any feature, endpoint, or utility without prior notice. Continued use of the platform after modifications constitutes your acceptance of the updated terms.
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %}

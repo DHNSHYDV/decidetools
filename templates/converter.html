@@ -1,6 +1,203 @@
 {% extends "base.html" %}
 
-{% block title %}Document Converter — Decide Solutions{% endblock %}
+{% block title %}
+{% if mode == "pdf-to-docx" %}
+PDF to DOCX Converter – Convert PDF to Word Online | Decide Solutions
+{% else %}
+DOCX to PDF Converter – Convert Word to PDF Online | Decide Solutions
+{% endif %}
+{% endblock %}
+
+{% block meta_description %}
+{% if mode == "pdf-to-docx" %}
+Convert PDF files to editable DOCX Word documents online. Fast, simple document conversion with no sign-up required.
+{% else %}
+Convert DOCX Word documents to PDF online for free. Fast and simple document conversion with no sign-up required.
+{% endif %}
+{% endblock %}
+
+
+{% block structured_data %}
+{% if mode == "pdf-to-docx" %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "@id": "{{ site_url }}/tools/pdf-to-docx#app",
+      "name": "PDF to DOCX Converter",
+      "url": "{{ site_url }}/tools/pdf-to-docx",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript. Requires HTML5.",
+      "description": "Convert PDF files to editable DOCX Word documents online. Fast, simple document conversion with no sign-up required.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "{{ site_url }}/tools/pdf-to-docx#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "{{ site_url }}/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Tools",
+          "item": "{{ site_url }}/#cardsSection"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "PDF to DOCX Converter",
+          "item": "{{ site_url }}/tools/pdf-to-docx"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "{{ site_url }}/tools/pdf-to-docx#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How do I convert PDF to DOCX?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Drag and drop your PDF document into the upload zone or click to browse. Click 'Convert PDF to Word' and your fully editable DOCX document will be ready to download in seconds."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I edit the converted Word document?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. The generated file is a standard Microsoft Word (.docx) document with text paragraphs, headings, and table cells converted into editable flowable text elements."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is the PDF converter free?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Decide Solutions provides completely free document conversions without subscriptions, usage limits, or hidden fees."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Are uploaded files stored?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. All files are converted in an isolated temporary directory in server memory and wiped immediately upon download completion. We never retain your documents."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+{% else %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "@id": "{{ site_url }}/tools/docx-to-pdf#app",
+      "name": "DOCX to PDF Converter",
+      "url": "{{ site_url }}/tools/docx-to-pdf",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript. Requires HTML5.",
+      "description": "Convert DOCX Word documents to PDF online for free. Fast and simple document conversion with no sign-up required.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "{{ site_url }}/tools/docx-to-pdf#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "{{ site_url }}/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Tools",
+          "item": "{{ site_url }}/#cardsSection"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "DOCX to PDF Converter",
+          "item": "{{ site_url }}/tools/docx-to-pdf"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "{{ site_url }}/tools/docx-to-pdf#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How do I convert DOCX to PDF?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Upload your .docx or .doc Microsoft Word file by dragging it into the dropzone or browsing your files, then click 'Convert Word to PDF' to generate your download."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is the DOCX to PDF converter free?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, it is 100% free with no account creation, no subscriptions, and no document watermarks."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Will formatting be preserved?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Our converter uses native headless LibreOffice engines to preserve exact font styles, margins, tables, headers, footers, and page breaks."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I convert DOCX files on mobile?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. The tool runs directly in any modern mobile browser on iOS and Android without requiring third-party app installations."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Are my files stored?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Files are written to temporary scratch folders only for the duration of the conversion and are permanently purged immediately after."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+{% endif %}
+{% endblock %}
 
 {% block content %}
 <div class="tool-view-container">
@@ -11,8 +208,14 @@
       </svg>
       <span>Back to Overview</span>
     </a>
-    <h1>Document Converter</h1>
-    <p>Easily convert Word documents (.docx) to PDF, or convert PDF files back to editable Word.</p>
+
+    {% if mode == "pdf-to-docx" %}
+      <h1>PDF to DOCX Converter</h1>
+      <p>Convert PDF files to editable DOCX Word documents online. Fast, simple document conversion with no sign-up required.</p>
+    {% else %}
+      <h1>DOCX to PDF Converter</h1>
+      <p>Convert DOCX Word documents to PDF online for free. Fast and simple document conversion with no sign-up required.</p>
+    {% endif %}
   </div>
 
   <div class="tool-box">
@@ -27,7 +230,11 @@
         Drop your document here, or <span style="color: #818CF8; text-decoration: underline; text-underline-offset: 3px;">browse</span>
       </div>
       <div style="color: var(--text-tertiary); font-size: 0.86rem;">
-        Supports .docx, .doc, and .pdf documents up to 50 MB
+        {% if mode == "pdf-to-docx" %}
+          Supports .pdf (and .docx) files up to 100 MB
+        {% else %}
+          Supports .docx, .doc (and .pdf) files up to 100 MB
+        {% endif %}
       </div>
       <input type="file" id="fileInput" accept=".docx,.doc,.pdf" style="display: none;">
     </div>
@@ -62,6 +269,181 @@
     <div class="alert alert-error" id="errorBox"></div>
     <div class="alert alert-success" id="successBox"></div>
   </div>
+
+  <!-- Detailed Human-Readable SEO Content Section -->
+  <section class="seo-content-section">
+    <article class="seo-card">
+      {% if mode == "pdf-to-docx" %}
+        <h2>Free PDF to DOCX Converter</h2>
+        <p>
+          Need to make edits to a finalized PDF document? Our <strong>PDF to DOCX Converter</strong> parses static PDF files and translates text elements, tabular grids, font styles, and imagery into an editable Microsoft Word document (.docx). This eliminates the tedious task of manually retyping contracts, resumes, or reports.
+        </p>
+
+        <h2>How to Convert PDF to Word</h2>
+        <ol class="seo-steps-list">
+          <li><strong>Upload PDF File</strong>: Drag your PDF into the interactive upload area above or click to browse from your device.</li>
+          <li><strong>Start Conversion</strong>: Click the <em>Convert PDF to Word (DOCX)</em> button to begin layout analysis.</li>
+          <li><strong>Download DOCX</strong>: Once parsing completes, click <em>Download &amp; Save Document</em> to open your editable Word file.</li>
+        </ol>
+
+        <h2>When Should You Convert PDF to DOCX?</h2>
+        <div class="seo-features-grid">
+          <div class="seo-feature-item">
+            <h3>Contract Revisions</h3>
+            <p>Modify terms, update clauses, and incorporate redlines in legal or business agreements received in PDF format.</p>
+          </div>
+          <div class="seo-feature-item">
+            <h3>Resume Updates</h3>
+            <p>Quickly adjust job titles, dates, or skills on an older PDF resume without starting from scratch.</p>
+          </div>
+          <div class="seo-feature-item">
+            <h3>Reclaiming Lost Source Files</h3>
+            <p>Recover editable text and structured tables when the original Word (.docx) document was lost or deleted.</p>
+          </div>
+        </div>
+
+        <h2>Editable Word Documents</h2>
+        <p>
+          Unlike basic OCR tools that dump raw unstyled text into a notepad, our conversion engine intelligently detects table columns, indentations, headers, and bullet points so your converted Word document looks as close to the original visual document as possible.
+        </p>
+
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-container">
+          <details class="faq-item" open>
+            <summary class="faq-question">How do I convert PDF to DOCX?</summary>
+            <div class="faq-answer">
+              <p>Drag and drop your PDF document into the upload zone or click to browse. Click 'Convert PDF to Word' and your fully editable DOCX document will be ready to download in seconds.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">Can I edit the converted Word document?</summary>
+            <div class="faq-answer">
+              <p>Yes. The generated file is a standard Microsoft Word (.docx) document with text paragraphs, headings, and table cells converted into editable flowable text elements.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">Is the PDF converter free?</summary>
+            <div class="faq-answer">
+              <p>Yes. Decide Solutions provides completely free document conversions without subscriptions, usage limits, or hidden fees.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">Are uploaded files stored?</summary>
+            <div class="faq-answer">
+              <p>No. All files are converted in an isolated temporary directory in server memory and wiped immediately upon download completion. We never retain your documents.</p>
+            </div>
+          </details>
+        </div>
+
+        <!-- Cross-Tool Linking -->
+        <div class="related-tools-box">
+          <h3>Need to Convert Back?</h3>
+          <p>When you finish editing your Word document, convert it back to a pristine PDF:</p>
+          <div class="related-tools-links">
+            <a href="{{ url_for('tool_docx_to_pdf') }}" class="related-tool-chip">
+              <strong>DOCX to PDF Converter</strong> &rarr; Convert Word documents to PDF
+            </a>
+            <a href="{{ url_for('tool_qr') }}" class="related-tool-chip">
+              <strong>Free QR Code Generator</strong> &rarr; Create customized QR codes
+            </a>
+          </div>
+        </div>
+
+      {% else %}
+        <h2>Free DOCX to PDF Converter</h2>
+        <p>
+          Microsoft Word (.docx) is the gold standard for drafting and editing text, but sharing Word files directly can cause formatting misalignments across different operating systems. The Decide Solutions <strong>DOCX to PDF Converter</strong> transforms your Word documents into universally compatible, locked PDF files that display identically on any phone, tablet, or desktop.
+        </p>
+
+        <h2>How to Convert DOCX to PDF</h2>
+        <ol class="seo-steps-list">
+          <li><strong>Upload Word Document</strong>: Drag your .docx or .doc file into the dropzone or select it from your device.</li>
+          <li><strong>Process File</strong>: Click <em>Convert Word to PDF</em> to render all pages and typographic structures.</li>
+          <li><strong>Download PDF</strong>: Click <em>Download &amp; Save Document</em> to save your finalized PDF file instantly.</li>
+        </ol>
+
+        <h2>Why Convert Word Documents to PDF?</h2>
+        <div class="seo-features-grid">
+          <div class="seo-feature-item">
+            <h3>Universal Viewing</h3>
+            <p>PDF files look identical on Windows, macOS, Linux, iOS, and Android without requiring Microsoft Office.</p>
+          </div>
+          <div class="seo-feature-item">
+            <h3>Integrity &amp; Security</h3>
+            <p>Lock your text, formatting, and page numbers to prevent accidental modifications or layout shifts when printed.</p>
+          </div>
+          <div class="seo-feature-item">
+            <h3>Professional Distribution</h3>
+            <p>Present resumes, invoices, proposals, and whitepapers in a clean, publishable format ready for clients.</p>
+          </div>
+        </div>
+
+        <h2>DOCX vs PDF</h2>
+        <p>
+          Understanding when to use each format improves your document workflows:
+        </p>
+        <ul class="seo-bullets">
+          <li><strong>DOCX (Word)</strong>: Best for active drafting, authoring, collaborating, and continuous revisions.</li>
+          <li><strong>PDF (Portable Document Format)</strong>: Best for archiving, printing, emailing, and official publishing where visual consistency is essential.</li>
+        </ul>
+
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-container">
+          <details class="faq-item" open>
+            <summary class="faq-question">How do I convert DOCX to PDF?</summary>
+            <div class="faq-answer">
+              <p>Upload your .docx or .doc Microsoft Word file by dragging it into the dropzone or browsing your files, then click 'Convert Word to PDF' to generate your download.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">Is the DOCX to PDF converter free?</summary>
+            <div class="faq-answer">
+              <p>Yes, it is 100% free with no account creation, no subscriptions, and no document watermarks.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">Will formatting be preserved?</summary>
+            <div class="faq-answer">
+              <p>Yes. Our converter uses native headless LibreOffice engines to preserve exact font styles, margins, tables, headers, footers, and page breaks.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">Can I convert DOCX files on mobile?</summary>
+            <div class="faq-answer">
+              <p>Yes. The tool runs directly in any modern mobile browser on iOS and Android without requiring third-party app installations.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">Are my files stored?</summary>
+            <div class="faq-answer">
+              <p>No. Files are written to temporary scratch folders only for the duration of the conversion and are permanently purged immediately after.</p>
+            </div>
+          </details>
+        </div>
+
+        <!-- Cross-Tool Linking -->
+        <div class="related-tools-box">
+          <h3>Convert in the Reverse Direction</h3>
+          <p>Need to turn a PDF back into an editable Word document? Try our sister tool:</p>
+          <div class="related-tools-links">
+            <a href="{{ url_for('tool_pdf_to_docx') }}" class="related-tool-chip">
+              <strong>PDF to DOCX Converter</strong> &rarr; Convert PDF files back to editable Word
+            </a>
+            <a href="{{ url_for('tool_qr') }}" class="related-tool-chip">
+              <strong>Free QR Code Generator</strong> &rarr; Create customized QR codes
+            </a>
+          </div>
+        </div>
+      {% endif %}
+    </article>
+  </section>
 </div>
 
 <!-- Processing & Completion Overlay with Dominoes Animation -->
@@ -365,7 +747,6 @@
       lastConvertedBlob = blob;
       lastConvertedFilename = downloadName;
 
-      // Transition modal to intentional Completion Pop-Up Card
       clearInterval(timerInterval);
       processingCard.style.display = 'none';
 

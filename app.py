@@ -3,7 +3,7 @@ import os
 import shutil
 import tempfile
 from pathlib import Path
-from flask import Flask, render_template, request, send_file, jsonify
+from flask import Flask, render_template, request, send_file, jsonify, redirect, url_for
 from werkzeug.utils import secure_filename
 
 from modules.file_converter import convert_file, ConversionError
@@ -16,32 +16,146 @@ app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
 ALLOWED_DOC_EXTS = {".docx", ".doc", ".pdf"}
 
+# Configurable site base URL (defaults to production deployment domain)
+SITE_URL = os.environ.get("SITE_URL", "https://decidetools-production.up.railway.app").rstrip("/")
 
-# --- Page Routes ---
+
+@app.context_processor
+def inject_global_context():
+    # Construct self-referencing canonical URL
+    canonical = f"{SITE_URL}{request.path}"
+    return {
+        "site_url": SITE_URL,
+        "canonical_url": canonical,
+        "current_year": 2026,
+    }
+
+
+# --- SEO-Friendly Page Routes ---
 
 @app.route("/")
 def index():
     return render_template("index.html")
 
 
-@app.route("/tools/converter")
-def tool_converter():
-    return render_template("converter.html")
+# 1. YouTube Tools
+@app.route("/tools/youtube-downloader")
+def tool_youtube_downloader():
+    return render_template("media_converter.html", sub_tool="downloader")
 
 
-@app.route("/tools/qr-code")
+@app.route("/tools/youtube-to-mp3")
+def tool_youtube_mp3():
+    return render_template("media_converter.html", sub_tool="mp3")
+
+
+@app.route("/tools/youtube-to-mp4")
+def tool_youtube_mp4():
+    return render_template("media_converter.html", sub_tool="mp4")
+
+
+# 2. QR Code Generator
+@app.route("/tools/qr-code-generator")
 def tool_qr():
     return render_template("qr_studio.html")
 
 
-@app.route("/tools/media")
-def tool_media():
-    return render_template("media_converter.html")
+# 3. Document Converters
+@app.route("/tools/docx-to-pdf")
+def tool_docx_to_pdf():
+    return render_template("converter.html", mode="docx-to-pdf")
 
+
+@app.route("/tools/pdf-to-docx")
+def tool_pdf_to_docx():
+    return render_template("converter.html", mode="pdf-to-docx")
+
+
+# --- Legacy Route 301 Permanent Redirects ---
+
+@app.route("/tools/media")
+def legacy_media():
+    return redirect(url_for("tool_youtube_downloader"), code=301)
+
+
+@app.route("/tools/qr-code")
+def legacy_qr():
+    return redirect(url_for("tool_qr"), code=301)
+
+
+@app.route("/tools/converter")
+def legacy_converter():
+    return redirect(url_for("tool_docx_to_pdf"), code=301)
+
+
+# --- Trust & Information Pages ---
+
+@app.route("/about")
+def about():
+    return render_template("about.html")
+
+
+@app.route("/privacy")
+def privacy():
+    return render_template("privacy.html")
+
+
+@app.route("/terms")
+def terms():
+    return render_template("terms.html")
+
+
+# --- SEO Infrastructure & Google Verification ---
 
 @app.route("/google33d1629be034105c.html")
 def google_verification():
     return "google-site-verification: google33d1629be034105c.html", 200, {"Content-Type": "text/html"}
+
+
+@app.route("/robots.txt")
+def robots_txt():
+    content = f"""User-agent: *
+Allow: /
+Disallow: /api/
+
+Sitemap: {SITE_URL}/sitemap.xml
+"""
+    return content, 200, {"Content-Type": "text/plain; charset=utf-8"}
+
+
+@app.route("/sitemap.xml")
+def sitemap_xml():
+    pages = [
+        {"loc": f"{SITE_URL}/", "priority": "1.0", "changefreq": "weekly"},
+        {"loc": f"{SITE_URL}/tools/youtube-downloader", "priority": "0.9", "changefreq": "weekly"},
+        {"loc": f"{SITE_URL}/tools/youtube-to-mp3", "priority": "0.9", "changefreq": "weekly"},
+        {"loc": f"{SITE_URL}/tools/youtube-to-mp4", "priority": "0.9", "changefreq": "weekly"},
+        {"loc": f"{SITE_URL}/tools/qr-code-generator", "priority": "0.9", "changefreq": "weekly"},
+        {"loc": f"{SITE_URL}/tools/docx-to-pdf", "priority": "0.9", "changefreq": "weekly"},
+        {"loc": f"{SITE_URL}/tools/pdf-to-docx", "priority": "0.9", "changefreq": "weekly"},
+        {"loc": f"{SITE_URL}/about", "priority": "0.5", "changefreq": "monthly"},
+        {"loc": f"{SITE_URL}/privacy", "priority": "0.5", "changefreq": "monthly"},
+        {"loc": f"{SITE_URL}/terms", "priority": "0.5", "changefreq": "monthly"},
+    ]
+    xml_items = "\n".join([
+        f"""  <url>
+    <loc>{p['loc']}</loc>
+    <lastmod>2026-09-09</lastmod>
+    <changefreq>{p['changefreq']}</changefreq>
+    <priority>{p['priority']}</priority>
+  </url>""" for p in pages
+    ])
+    xml_content = f"""<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+{xml_items}
+</urlset>"""
+    return xml_content, 200, {"Content-Type": "application/xml; charset=utf-8"}
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template("404.html"), 404
+
 
 
 # --- API Routes ---

@@ -1,6 +1,47 @@
 {% extends "base.html" %}
 
-{% block title %}Decide Solutions — Free Online Tools{% endblock %}
+{% block title %}Free Online Tools for Files, PDF, QR & Media | Decide Solutions{% endblock %}
+{% block meta_description %}Free online tools for converting documents, creating QR codes, and working with media. Fast, simple browser-based tools with no sign-up required.{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "{{ site_url }}/#website",
+      "url": "{{ site_url }}/",
+      "name": "Decide Solutions",
+      "description": "Free online tools for converting documents, creating QR codes, and working with media.",
+      "publisher": {
+        "@type": "Organization",
+        "name": "Decide Solutions",
+        "url": "{{ site_url }}/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "{{ site_url }}/static/favicon.svg"
+        }
+      }
+    },
+    {
+      "@type": "WebApplication",
+      "@id": "{{ site_url }}/#app",
+      "name": "Decide Solutions Suite",
+      "url": "{{ site_url }}/",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript. Requires HTML5.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+  ]
+}
+</script>
+{% endblock %}
 
 {% block content %}
 <div class="hero">
@@ -21,8 +62,8 @@
     </div>
   </div>
 
-  <h1>Free, Fast &amp; Simple Tools</h1>
-  <p>Convert documents, download YouTube video or audio, and create custom QR codes directly in your browser.</p>
+  <h1>Free Online Tools for Files, PDF, QR &amp; Media</h1>
+  <p>Convert documents, download YouTube video or audio, and create custom QR codes directly in your browser with zero sign-up.</p>
 </div>
 
 <!-- Dynamic Horizontal Tool Explanation Box -->
@@ -52,7 +93,7 @@
 
 <div class="custom-cards-grid" id="cardsSection">
   <!-- Card 1: YT MP3/MP4 Downloader (3D Cyber Holographic Card) -->
-  <a href="{{ url_for('tool_media') }}" class="card-wrapper" data-tool="media" title="Launch YT MP3/MP4 Downloader">
+  <a href="{{ url_for('tool_youtube_downloader') }}" class="card-wrapper" data-tool="media" title="Launch YouTube Video Downloader">
     <div class="container-cyber noselect">
       <div class="canvas">
         <div class="tracker tr-1"></div>
@@ -108,7 +149,7 @@
   </a>
 
   <!-- Card 2: QR Generator (Modern Purple Card) -->
-  <a href="{{ url_for('tool_qr') }}" class="card-wrapper" data-tool="qr" title="Launch QR Generator">
+  <a href="{{ url_for('tool_qr') }}" class="card-wrapper" data-tool="qr" title="Launch Free QR Code Generator">
     <div class="card-purple">
       <div class="card-border-top"></div>
       <div class="img">
@@ -123,7 +164,7 @@
   </a>
 
   <!-- Card 3: Document Converter (Neumorphic Card) -->
-  <a href="{{ url_for('tool_converter') }}" class="card-wrapper" data-tool="doc" title="Launch Document Converter">
+  <a href="{{ url_for('tool_docx_to_pdf') }}" class="card-wrapper" data-tool="doc" title="Launch DOCX to PDF Converter">
     <div class="card-neo">
       <div class="img">
         <div class="save">
@@ -145,6 +186,31 @@
     </div>
   </a>
 </div>
+
+<!-- Home Overview & Quick Hub Section -->
+<section class="seo-content-section" style="margin-top: 4rem;">
+  <div class="seo-card">
+    <h2>All-in-One Online Productivity Tools</h2>
+    <p>
+      Decide Solutions offers high-speed, browser-native utility applications designed for modern workflows. Whether you need to convert Microsoft Word files to universally readable PDFs, generate scannable QR codes for your wireless network, or transcode online video into pristine 320kbps MP3 audio, our tools handle your requests instantly.
+    </p>
+
+    <div class="seo-features-grid">
+      <div class="seo-feature-item">
+        <h3>Lightning Fast</h3>
+        <p>Zero queuing or artificial rate limits. Processing starts the instant your request is dispatched.</p>
+      </div>
+      <div class="seo-feature-item">
+        <h3>Ephemeral Processing</h3>
+        <p>Files exist only during conversion in temporary RAM directories and are deleted immediately upon completion.</p>
+      </div>
+      <div class="seo-feature-item">
+        <h3>No Account Required</h3>
+        <p>No paywalls, no credits, and no sign-up forms. Access all tools completely free anytime.</p>
+      </div>
+    </div>
+  </div>
+</section>
 {% endblock %}
 
 {% block extra_scripts %}
@@ -160,12 +226,12 @@
       btnIcon: `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>`
     },
     media: {
-      badge: 'YT MP3/MP4 Downloader',
+      badge: 'YouTube Video Downloader',
       title: 'YouTube Video & Audio Stream Extractor',
       desc: 'Download YouTube videos in crisp Full HD (1080p, 720p, 480p, 360p) MP4 video or extract studio-quality 320kbps MP3 audio tracks via native FFmpeg. Features live video URL inspection and zero automatic downloads.',
       features: ['✓ 320kbps Studio MP3', '✓ Up to 1080p Full HD MP4', '✓ Live Thumbnail & Title Inspector', '✓ Explicit Save Control'],
       btnText: 'Open YT Downloader',
-      btnHref: "{{ url_for('tool_media') }}",
+      btnHref: "{{ url_for('tool_youtube_downloader') }}",
       btnIcon: `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>`
     },
     qr: {
@@ -183,7 +249,7 @@
       desc: 'Convert Microsoft Word (.docx/.doc) files to PDF, or transform PDF documents back into fully editable Word documents. Accurately preserves typographic hierarchy, complex tabular layouts, margins, and vector styling.',
       features: ['✓ Word (.docx) to PDF (LibreOffice)', '✓ PDF to Editable Word (pdf2docx)', '✓ Preserves Tables & Margins', '✓ Fast In-Memory Processing'],
       btnText: 'Open Document Converter',
-      btnHref: "{{ url_for('tool_converter') }}",
+      btnHref: "{{ url_for('tool_docx_to_pdf') }}",
       btnIcon: `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>`
     }
   };
@@ -192,7 +258,6 @@
     const data = toolDetails[toolId] || toolDetails.all;
     const box = document.getElementById('toolExplBox');
     
-    // Smooth fade transition
     box.style.opacity = '0.4';
     box.style.transform = 'translateY(4px)';
 
@@ -212,7 +277,6 @@
       box.style.transform = 'translateY(0)';
     }, 120);
 
-    // Filter cards below
     const cards = document.querySelectorAll('.card-wrapper');
     cards.forEach(card => {
       if (toolId === 'all' || card.dataset.tool === toolId) {

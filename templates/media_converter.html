@@ -1,6 +1,127 @@
 {% extends "base.html" %}
 
-{% block title %}YT MP3/MP4 Downloader — Decide Solutions{% endblock %}
+{% block title %}
+{% if sub_tool == 'mp3' %}
+YouTube to MP3 Converter — Decide Solutions
+{% elif sub_tool == 'mp4' %}
+YouTube to MP4 Converter — Decide Solutions
+{% else %}
+YouTube Video Downloader — Decide Solutions
+{% endif %}
+{% endblock %}
+
+{% block meta_description %}
+{% if sub_tool == 'mp3' %}
+Convert YouTube videos to high-quality 320kbps MP3 audio files online for free. Fast, clean audio extraction with Decide Solutions.
+{% elif sub_tool == 'mp4' %}
+Convert and download YouTube videos to 1080p, 720p HD MP4 video online for free. Fast, high-definition video converter by Decide Solutions.
+{% else %}
+Download YouTube videos online in MP4 or MP3 high-quality formats with Decide Solutions. Fast, free, browser-based media conversion.
+{% endif %}
+{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "@id": "{{ canonical_url }}#app",
+      "name": "{% if sub_tool == 'mp3' %}YouTube to MP3 Converter{% elif sub_tool == 'mp4' %}YouTube to MP4 Converter{% else %}YouTube Video Downloader{% endif %}",
+      "url": "{{ canonical_url }}",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "description": "{% if sub_tool == 'mp3' %}Convert YouTube videos to high-quality 320kbps MP3 audio files online for free.{% elif sub_tool == 'mp4' %}Download YouTube videos in 1080p, 720p HD MP4 video online for free.{% else %}Download YouTube videos in MP4 or MP3 high-quality formats online.{% endif %}",
+      "browserRequirements": "Requires JavaScript. Requires HTML5."
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "{{ canonical_url }}#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "{{ site_url }}/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Tools",
+          "item": "{{ site_url }}/#tools"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "{% if sub_tool == 'mp3' %}YouTube to MP3{% elif sub_tool == 'mp4' %}YouTube to MP4{% else %}YouTube Downloader{% endif %}",
+          "item": "{{ canonical_url }}"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "{{ canonical_url }}#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is it legal to convert or download YouTube videos?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Downloading or converting online media is permissible for personal media you own, public domain videos, and content covered by Creative Commons or explicit permission from the copyright owner. Users must comply with applicable intellectual property laws and third-party terms of service."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the difference between 320 kbps and 192 kbps MP3?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Bitrate determines audio fidelity and file size. 320 kbps offers studio master fidelity with virtually zero audible compression artifacts, ideal for high-end headphones. 192 kbps provides great standard fidelity with smaller file sizes, perfect for everyday listening."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I download videos in Full HD 1080p resolution?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. When you choose the MP4 format, you can select 'Best Available (Auto Max)' or specify 1080p Full HD, 720p HD, 480p, or 360p depending on the resolutions provided by the source video."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does Decide Solutions store or log my downloaded files?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. All media extraction and conversion runs inside ephemeral, isolated temporary folders on the server. As soon as the file is streamed to your browser or the conversion finishes, the temporary directory is permanently deleted."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do I need to install any software or browser extensions?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No installation is required. Decide Solutions is a 100% web-based utility that works directly inside Google Chrome, Mozilla Firefox, Apple Safari, Microsoft Edge, and mobile browsers on iOS and Android."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does conversion take a few moments?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "To deliver pristine audio and video without corruption, our backend fetches the raw media streams and merges or transcodes them using high-performance FFmpeg encoding before generating your download."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+{% endblock %}
 
 {% block content %}
 <div class="tool-view-container">
@@ -11,8 +132,17 @@
       </svg>
       <span>Back to Overview</span>
     </a>
-    <h1>YT MP3/MP4 Downloader</h1>
-    <p>Download YouTube videos in MP4 format or save audio tracks directly as MP3 files.</p>
+    
+    {% if sub_tool == 'mp3' %}
+    <h1>YouTube to MP3 Converter</h1>
+    <p>Extract audio from YouTube videos and save as high-bitrate MP3 files (up to 320 kbps) for offline listening.</p>
+    {% elif sub_tool == 'mp4' %}
+    <h1>YouTube to MP4 Converter</h1>
+    <p>Convert and download YouTube videos directly into high-definition MP4 format (1080p, 720p HD) with Decide Solutions.</p>
+    {% else %}
+    <h1>YouTube Video Downloader</h1>
+    <p>Download YouTube videos in MP4 video format or extract clean audio tracks directly as MP3 files.</p>
+    {% endif %}
   </div>
 
   <div class="tool-box">
@@ -30,7 +160,7 @@
 
     <!-- Video Metadata Card (Initially Hidden) -->
     <div id="metaCard" style="display: none; margin: 1.75rem 0; background: var(--bg-subtle); border: 1px solid var(--border-medium); border-radius: 0.85rem; padding: 1.25rem; align-items: center; gap: 1.35rem;">
-      <img id="metaThumb" src="" alt="Thumbnail" style="width: 140px; height: 80px; object-fit: cover; border-radius: 8px; flex-shrink: 0; background: #000; box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
+      <img id="metaThumb" src="" alt="Video thumbnail preview" style="width: 140px; height: 80px; object-fit: cover; border-radius: 8px; flex-shrink: 0; background: #000; box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
       <div style="overflow: hidden; flex: 1;">
         <h3 id="metaTitle" style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.4rem; line-height: 1.35;">Video Title</h3>
         <div style="font-size: 0.84rem; color: var(--text-tertiary); display: flex; gap: 1.25rem; flex-wrap: wrap;">
@@ -45,8 +175,8 @@
       <div class="form-group">
         <label class="form-label" for="targetFormat">Output Container Format</label>
         <select id="targetFormat" class="form-select" onchange="toggleQualityOptions()">
-          <option value="mp3">MP3 Audio (Music / Speech)</option>
-          <option value="mp4">MP4 Video (Video + Audio)</option>
+          <option value="mp3" {% if sub_tool == 'mp3' %}selected{% endif %}>MP3 Audio (Music / Speech)</option>
+          <option value="mp4" {% if sub_tool == 'mp4' %}selected{% endif %}>MP4 Video (Video + Audio)</option>
         </select>
       </div>
       <div class="form-group" id="qualityGroup">
@@ -79,6 +209,125 @@
     <div class="alert alert-error" id="mediaErrorBox"></div>
     <div class="alert alert-success" id="mediaSuccessBox"></div>
   </div>
+
+  <!-- Copyright Compliance & Legal Usage Banner -->
+  <div class="seo-card copyright-banner" style="margin-top: 2rem; border-left: 4px solid var(--accent-primary);">
+    <div style="display: flex; gap: 1rem; align-items: flex-start;">
+      <div style="color: var(--accent-primary); flex-shrink: 0; margin-top: 2px;">
+        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+      </div>
+      <div>
+        <h4 style="font-size: 0.98rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.35rem;">Authorized Use &amp; Copyright Policy</h4>
+        <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.55; margin: 0;">
+          Decide Solutions provides this utility strictly for personal archival, public domain content, Creative Commons licensed media, and content you have explicit permission to download. We respect intellectual property rights and ask that all users comply with applicable copyright laws and platform terms.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rich Educational & SEO Content Section -->
+  <section class="seo-content-section" style="margin-top: 3.5rem;">
+    <h2>High-Fidelity Media Extraction by Decide Solutions</h2>
+    <p>
+      Whether you are an educator assembling classroom lecture materials, a creator archiving your own video content, or an audiophile seeking crystal-clear audio tracks, the Decide Solutions media processing pipeline offers rapid, browser-based media conversion powered by FFmpeg.
+    </p>
+
+    <div class="seo-features-grid" style="margin: 2rem 0;">
+      <div class="seo-card">
+        <h3>How to Convert in 3 Simple Steps</h3>
+        <ol style="padding-left: 1.25rem; color: var(--text-secondary); line-height: 1.8; margin-top: 0.75rem;">
+          <li><strong>Paste the Link:</strong> Copy the target YouTube video URL and paste it into the input field above.</li>
+          <li><strong>Inspect &amp; Select Quality:</strong> Click "Inspect URL" to preview title and duration, then select MP3 bitrate (320, 192, or 128 kbps) or MP4 resolution (1080p Full HD, 720p HD).</li>
+          <li><strong>Download &amp; Save:</strong> Click "Convert &amp; Download". Once processed, your browser saves the clean file directly.</li>
+        </ol>
+      </div>
+
+      <div class="seo-card">
+        <h3>Audio Bitrate Selection Guide</h3>
+        <ul style="padding-left: 1.25rem; color: var(--text-secondary); line-height: 1.8; margin-top: 0.75rem;">
+          <li><strong>320 kbps (Studio Master):</strong> Maximum acoustic detail. Captures full dynamic range with imperceptible compression. Recommended for music and high-end audio setups.</li>
+          <li><strong>192 kbps (Standard Quality):</strong> The optimal balance between crisp stereo clarity and modest file size. Ideal for podcasts, tutorials, and standard streaming devices.</li>
+          <li><strong>128 kbps (Compact/Speech):</strong> Lightweight file footprint, fast download speed. Best suited for voice recordings, lectures, and devices with limited storage.</li>
+        </ul>
+      </div>
+
+      <div class="seo-card">
+        <h3>Video Resolution Options</h3>
+        <ul style="padding-left: 1.25rem; color: var(--text-secondary); line-height: 1.8; margin-top: 0.75rem;">
+          <li><strong>1080p Full HD:</strong> 1920&times;1080 resolution for razor-sharp playback on desktop monitors and modern smart televisions.</li>
+          <li><strong>720p HD:</strong> 1280&times;720 standard high definition with fast rendering speeds and smooth frame rates.</li>
+          <li><strong>480p &amp; 360p Standard:</strong> Compact video streams designed for fast transfers over cellular networks and low-bandwidth connections.</li>
+        </ul>
+      </div>
+
+      <div class="seo-card">
+        <h3>Privacy &amp; Security Guarantee</h3>
+        <p style="color: var(--text-secondary); line-height: 1.6; margin-top: 0.75rem;">
+          We believe in strict operational privacy. Media processing runs in temporary, isolated sandboxes on our servers. As soon as the conversion finishes and your download starts, all temporary files are purged via secure deletion. We do not maintain logs of user URLs or media content.
+        </p>
+      </div>
+    </div>
+
+    <!-- Frequently Asked Questions -->
+    <h2 style="margin-top: 3.5rem; margin-bottom: 1.5rem;">Frequently Asked Questions</h2>
+    <div class="faq-container">
+      <div class="faq-item">
+        <h3>Is it legal to convert or download YouTube videos?</h3>
+        <p>
+          Downloading or converting videos is permissible for personal media you own, public domain videos, and content distributed under Creative Commons or with explicit permission from the creator. Always respect copyright laws and the Terms of Service of third-party platforms.
+        </p>
+      </div>
+
+      <div class="faq-item">
+        <h3>What is the difference between 320 kbps and 192 kbps MP3?</h3>
+        <p>
+          Audio bitrate refers to the amount of audio data processed every second. 320 kbps is the highest standardized MP3 bitrate, preserving nuanced treble and bass frequencies without noticeable artifacting. 192 kbps offers excellent sound quality with a ~40% smaller file size.
+        </p>
+      </div>
+
+      <div class="faq-item">
+        <h3>Can I download Full HD 1080p videos?</h3>
+        <p>
+          Yes! When you select the MP4 container format, our engine merges the highest-quality separate video and audio streams into an H.264 / AAC MP4 file compatible with every media player.
+        </p>
+      </div>
+
+      <div class="faq-item">
+        <h3>Does Decide Solutions store or log my downloaded files?</h3>
+        <p>
+          No. All files are temporarily transcoded in isolated server workspaces and removed immediately after delivery. We do not retain copies, host video catalogs, or profile user activities.
+        </p>
+      </div>
+
+      <div class="faq-item">
+        <h3>Do I need to install any software or browser extensions?</h3>
+        <p>
+          No software installation is necessary. Decide Solutions runs entirely inside your browser, whether on Windows, macOS, Linux, iOS, or Android.
+        </p>
+      </div>
+
+      <div class="faq-item">
+        <h3>Why does conversion take a few moments?</h3>
+        <p>
+          Unlike tools that simply link to low-grade streams, Decide Solutions uses FFmpeg to package high-bitrate audio and HD video containers seamlessly. This short encoding step guarantees high-fidelity, uncorrupted files.
+        </p>
+      </div>
+    </div>
+
+    <!-- Related Online Tools -->
+    <div class="related-tools-box" style="margin-top: 3.5rem;">
+      <h3 style="margin-bottom: 1rem;">Explore More Decide Solutions Utilities</h3>
+      <div style="display: flex; gap: 0.85rem; flex-wrap: wrap;">
+        <a href="{{ url_for('tool_youtube_mp3') }}" class="related-tool-chip">YouTube to MP3</a>
+        <a href="{{ url_for('tool_youtube_mp4') }}" class="related-tool-chip">YouTube to MP4</a>
+        <a href="{{ url_for('tool_qr') }}" class="related-tool-chip">QR Code Studio</a>
+        <a href="{{ url_for('tool_docx_to_pdf') }}" class="related-tool-chip">DOCX to PDF Converter</a>
+        <a href="{{ url_for('tool_pdf_to_docx') }}" class="related-tool-chip">PDF to DOCX Converter</a>
+      </div>
+    </div>
+  </section>
 </div>
 
 <!-- Processing & Completion Overlay with 3D Cylinder Text Animation -->
@@ -176,6 +425,9 @@
       resolutionGroup.style.display = 'none';
     }
   }
+
+  // Initialize display options on load
+  toggleQualityOptions();
 
   btnInspect.addEventListener('click', async () => {
     const url = mediaUrl.value.trim();
@@ -296,12 +548,11 @@
       return;
     }
 
-    // Reset popup button state
     btnMediaPopDownload.innerHTML = `
       <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
       </svg>
-      Download &amp; Save Video
+      Download &amp; Save Media
     `;
     btnMediaPopDownload.style.background = '';
 
@@ -352,10 +603,6 @@
       lastMediaBlob = blob;
       lastMediaFilename = filename;
 
-      // Note: Do NOT auto-trigger browser download here!
-      // Wait for user to explicitly click "Download & Save Video" in the popup modal.
-
-      // Transition modal to intentional Completion Pop-Up Card
       clearInterval(timerInterval);
       processingCard.style.display = 'none';
 

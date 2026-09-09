@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}Privacy Policy — Decide Solutions{% endblock %}
+{% block meta_description %}Review the Decide Solutions Privacy Policy. Transparent, ephemeral data processing with zero permanent file storage and zero user tracking.{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "{{ canonical_url }}#privacy",
+      "url": "{{ canonical_url }}",
+      "name": "Privacy Policy — Decide Solutions",
+      "description": "Decide Solutions Privacy Policy detailing our ephemeral data handling and zero permanent file storage.",
+      "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "{{ site_url }}/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Privacy Policy",
+            "item": "{{ canonical_url }}"
+          }
+        ]
+      }
+    }
+  ]
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="tool-view-container">
+  <div class="tool-header">
+    <a href="{{ url_for('index') }}" class="back-link">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+      </svg>
+      <span>Back to Overview</span>
+    </a>
+    <h1>Privacy Policy</h1>
+    <p>Last updated: September 2026 &bull; Effective immediately</p>
+  </div>
+
+  <div class="seo-content-section" style="margin-top: 1rem;">
+    <div class="seo-card" style="margin-bottom: 2rem;">
+      <h2>1. Our Fundamental Commitment</h2>
+      <p style="color: var(--text-secondary); line-height: 1.75;">
+        At <strong>Decide Solutions</strong> ("we", "our", or "the Platform"), we respect your personal privacy. We believe web utilities should accomplish their job without monitoring what you read, what you convert, or what you create.
+      </p>
+      <p style="color: var(--text-secondary); line-height: 1.75; margin-top: 1rem;">
+        This Privacy Policy explains how our services handle data, how our ephemeral file processing works, and the privacy safeguards engineered directly into our application code.
+      </p>
+    </div>
+
+    <div class="seo-card" style="margin-bottom: 2rem;">
+      <h2>2. Ephemeral File Processing &amp; Automatic Deletion</h2>
+      <p style="color: var(--text-secondary); line-height: 1.75;">
+        Our document converter (DOCX &harr; PDF) and media converter (YouTube MP3/MP4) require temporary access to files on our server in order to execute conversion libraries (such as LibreOffice, pdf2docx, and FFmpeg). Here is exactly how that process operates:
+      </p>
+      <ul style="padding-left: 1.25rem; color: var(--text-secondary); line-height: 1.8; margin-top: 1rem;">
+        <li><strong>Randomized Sandboxing:</strong> When you submit a file or URL for conversion, our system creates a strictly isolated temporary workspace directory using random UUID cryptographic naming.</li>
+        <li><strong>Zero Permanent Retention:</strong> As soon as the transcoded or converted file has been sent to your web browser, our backend immediately calls recursive directory deletion routines (<code>shutil.rmtree</code>). The temporary directory and all files inside are permanently erased from the server's filesystem.</li>
+        <li><strong>No File Databases:</strong> We do not store your documents in any database, S3 bucket, cold storage, or archival backup. Once deleted from the temporary workspace, your files cannot be retrieved by anyone, including our engineering team.</li>
+        <li><strong>QR Studio In-Memory Generation:</strong> QR codes generated via our QR Studio are compiled dynamically and served directly as base64 data URIs or in-memory byte streams. No QR images are saved to disk.</li>
+      </ul>
+    </div>
+
+    <div class="seo-card" style="margin-bottom: 2rem;">
+      <h2>3. Data We Do Not Collect</h2>
+      <p style="color: var(--text-secondary); line-height: 1.75;">
+        Decide Solutions is designed from the ground up to minimize data collection:
+      </p>
+      <ul style="padding-left: 1.25rem; color: var(--text-secondary); line-height: 1.8; margin-top: 1rem;">
+        <li>We do not require user registration or account creation.</li>
+        <li>We do not collect names, email addresses, phone numbers, or physical addresses.</li>
+        <li>We do not collect payment card information. All services are free of charge.</li>
+        <li>We do not deploy cross-site tracking cookies or behavioral advertising beacons.</li>
+        <li>We do not sell, rent, or trade your personal data to third-party data brokers.</li>
+      </ul>
+    </div>
+
+    <div class="seo-card" style="margin-bottom: 2rem;">
+      <h2>4. Server Infrastructure &amp; Technical Logs</h2>
+      <p style="color: var(--text-secondary); line-height: 1.75;">
+        Our hosting infrastructure (Railway) automatically records basic HTTP server access logs for operational health monitoring, rate limiting, and DDoS mitigation. These logs may include your IP address, browser user-agent header, referring page, HTTP status code, and timestamp. These standard logs are retained for short operational windows solely for infrastructure security and never contain document contents.
+      </p>
+    </div>
+
+    <div class="seo-card" style="margin-bottom: 2rem;">
+      <h2>5. Third-Party Media Platforms</h2>
+      <p style="color: var(--text-secondary); line-height: 1.75;">
+        When utilizing our YouTube inspection and conversion features, our server requests public video metadata and media streams from YouTube's content delivery networks on your behalf. These requests are governed by YouTube's and Google's Terms of Service and Privacy Policies.
+      </p>
+    </div>
+
+    <div class="seo-card">
+      <h2>6. Contact Us</h2>
+      <p style="color: var(--text-secondary); line-height: 1.75;">
+        If you have questions about this Privacy Policy, our server architecture, or data handling practices, please contact our team at:
+      </p>
+      <p style="color: var(--accent-primary); font-weight: 600; margin-top: 0.75rem;">
+        support@decidesolutions.org
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %}

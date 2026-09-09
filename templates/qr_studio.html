@@ -1,6 +1,110 @@
 {% extends "base.html" %}
 
-{% block title %}QR Generator — Decide Solutions{% endblock %}
+{% block title %}Free QR Code Generator – Create QR Codes Online | Decide Solutions{% endblock %}
+{% block meta_description %}Create free QR codes online for URLs, text and Wi-Fi networks. Customize your QR code and download it as PNG or SVG.{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "@id": "{{ site_url }}/tools/qr-code-generator#app",
+      "name": "Free QR Code Generator",
+      "url": "{{ site_url }}/tools/qr-code-generator",
+      "applicationCategory": "DesignApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript. Requires HTML5.",
+      "description": "Create free QR codes online for URLs, text and Wi-Fi networks. Customize your QR code and download it as PNG or SVG.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "{{ site_url }}/tools/qr-code-generator#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "{{ site_url }}/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Tools",
+          "item": "{{ site_url }}/#cardsSection"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Free QR Code Generator",
+          "item": "{{ site_url }}/tools/qr-code-generator"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "{{ site_url }}/tools/qr-code-generator#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How do I create a QR code?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Select your desired payload type (URL, text, or Wi-Fi), enter your data in the input box, adjust colors or error correction if desired, and click 'Export Raster (PNG)' or 'Export Scalable Vector (SVG)' to download your QR code instantly."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I create a QR code for a website?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Choose the 'Web Link & Text' tab and paste your full website address including https://. When scanned by any smartphone camera, the browser will open the webpage immediately."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I create a Wi-Fi QR code?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Select the 'Wi-Fi Network' tab, input your Network SSID (name), password, and security encryption protocol (WPA/WPA2/WPA3 or Open). Scanning this QR code lets guests automatically join your wireless network without typing passwords manually."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I download my QR code as PNG?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. The PNG export generates a high-resolution, pixel-crisp raster image that is perfect for web pages, emails, social media, and digital displays."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I download my QR code as SVG?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. The SVG format is an infinite vector graphic. It can be scaled to any size—from business cards to massive outdoor billboards—without losing sharpness or pixelating."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do QR codes expire?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Our generator creates static QR codes where your data is encoded directly into the pattern matrix. They do not redirect through external tracking servers, meaning they will work forever as long as your destination URL or Wi-Fi credentials remain valid."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+{% endblock %}
 
 {% block content %}
 <div class="tool-view-container" style="max-width: 980px;">
@@ -11,7 +115,7 @@
       </svg>
       <span>Back to Overview</span>
     </a>
-    <h1>QR Generator</h1>
+    <h1>Free QR Code Generator</h1>
     <p>Create custom QR codes for links, text, or Wi-Fi passwords and download as PNG or SVG.</p>
   </div>
 
@@ -118,6 +222,123 @@
       <div class="alert alert-error" id="qrErrorBox" style="width: 100%;"></div>
     </div>
   </div>
+
+  <!-- Detailed Human-Readable SEO Content Section -->
+  <section class="seo-content-section">
+    <article class="seo-card">
+      <h2>Free QR Code Generator Online</h2>
+      <p>
+        Quick Response (QR) codes are two-dimensional matrix barcodes that store encoded information such as web links, plain text notes, and wireless network configurations. The Decide Solutions <strong>Free QR Code Generator</strong> allows individuals, creators, and businesses to generate static QR codes instantly in their web browser without subscriptions, software installation, or watermarks.
+      </p>
+
+      <h2>How to Create a QR Code</h2>
+      <ol class="seo-steps-list">
+        <li><strong>Choose Data Type</strong>: Select between standard <em>Web Link &amp; Text</em> or <em>Wi-Fi Network</em>.</li>
+        <li><strong>Enter Your Content</strong>: Input your target URL, custom message, or wireless network credentials.</li>
+        <li><strong>Customize Style &amp; Colors</strong>: Choose contrast colors for the modules and backdrop, and pick your preferred error correction level.</li>
+        <li><strong>Download</strong>: Click <em>Export Raster (PNG)</em> for immediate screen use or <em>Export Scalable Vector (SVG)</em> for physical print media.</li>
+      </ol>
+
+      <h2>QR Code Types</h2>
+      <div class="seo-features-grid">
+        <div class="seo-feature-item">
+          <h3>URL QR Codes</h3>
+          <p>Direct users immediately to product pages, portfolio websites, digital menus, or landing pages when scanned with any modern iOS or Android camera app.</p>
+        </div>
+        <div class="seo-feature-item">
+          <h3>Text QR Codes</h3>
+          <p>Encode plain text snippets, verification codes, instructions, or short messages that can be read offline without an active internet connection.</p>
+        </div>
+        <div class="seo-feature-item">
+          <h3>Wi-Fi QR Codes</h3>
+          <p>Allow guests or customers to instantly connect to WPA, WPA2, or WPA3 wireless networks by scanning a code without ever typing complex passwords manually.</p>
+        </div>
+      </div>
+
+      <h2>PNG vs SVG QR Codes</h2>
+      <p>
+        Choosing the right format ensures optimal scanning reliability:
+      </p>
+      <ul class="seo-bullets">
+        <li><strong>PNG (Portable Network Graphics)</strong>: A lossless raster format ideal for digital screens, mobile apps, social media, presentation slides, and standard desktop viewing.</li>
+        <li><strong>SVG (Scalable Vector Graphics)</strong>: A mathematical vector format composed of precise XML paths. SVG files can be enlarged to any dimension—including storefront banners, posters, and merchandise—with zero blurriness or pixelation.</li>
+      </ul>
+
+      <h2>QR Code Error Correction</h2>
+      <p>
+        QR codes incorporate Reed-Solomon error correction algorithms, allowing them to remain fully readable even if partially smudged, torn, or obstructed:
+      </p>
+      <ul class="seo-bullets">
+        <li><strong>Level L (Low)</strong>: Recovers up to 7% damaged data. Generates the simplest, least dense pattern.</li>
+        <li><strong>Level M (Medium)</strong>: Recovers up to 15% damaged data. The ideal default balance for general digital and screen use.</li>
+        <li><strong>Level Q (Quartile)</strong>: Recovers up to 25% damaged data. Recommended for industrial environments or marketing materials.</li>
+        <li><strong>Level H (High)</strong>: Recovers up to 30% damaged data. Best for physical print where wear, dirt, or branding overlays may obscure parts of the symbol.</li>
+      </ul>
+
+      <!-- Visible FAQ Section -->
+      <h2>Frequently Asked Questions</h2>
+      <div class="faq-container">
+        <details class="faq-item" open>
+          <summary class="faq-question">How do I create a QR code?</summary>
+          <div class="faq-answer">
+            <p>Select your desired payload type (URL, text, or Wi-Fi), enter your data in the input box, adjust colors or error correction if desired, and click 'Export Raster (PNG)' or 'Export Scalable Vector (SVG)' to download your QR code instantly.</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-question">Can I create a QR code for a website?</summary>
+          <div class="faq-answer">
+            <p>Yes. Choose the 'Web Link &amp; Text' tab and paste your full website address including https://. When scanned by any smartphone camera, the browser will open the webpage immediately.</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-question">Can I create a Wi-Fi QR code?</summary>
+          <div class="faq-answer">
+            <p>Yes. Select the 'Wi-Fi Network' tab, input your Network SSID (name), password, and security encryption protocol (WPA/WPA2/WPA3 or Open). Scanning this QR code lets guests automatically join your wireless network without typing passwords manually.</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-question">Can I download my QR code as PNG?</summary>
+          <div class="faq-answer">
+            <p>Yes. The PNG export generates a high-resolution, pixel-crisp raster image that is perfect for web pages, emails, social media, and digital displays.</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-question">Can I download my QR code as SVG?</summary>
+          <div class="faq-answer">
+            <p>Yes. The SVG format is an infinite vector graphic. It can be scaled to any size—from business cards to massive outdoor billboards—without losing sharpness or pixelating.</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-question">Do QR codes expire?</summary>
+          <div class="faq-answer">
+            <p>No. Our generator creates static QR codes where your data is encoded directly into the pattern matrix. They do not redirect through external tracking servers, meaning they will work forever as long as your destination URL or Wi-Fi credentials remain valid.</p>
+          </div>
+        </details>
+      </div>
+
+      <!-- Internal Tool Linking Section -->
+      <div class="related-tools-box">
+        <h3>Explore Other Free Online Tools</h3>
+        <p>Convert documents or extract media using our suite of fast, browser-based utilities:</p>
+        <div class="related-tools-links">
+          <a href="{{ url_for('tool_docx_to_pdf') }}" class="related-tool-chip">
+            <strong>DOCX to PDF Converter</strong> &rarr; Convert Word to PDF
+          </a>
+          <a href="{{ url_for('tool_pdf_to_docx') }}" class="related-tool-chip">
+            <strong>PDF to DOCX Converter</strong> &rarr; Convert PDF to editable Word
+          </a>
+          <a href="{{ url_for('tool_youtube_downloader') }}" class="related-tool-chip">
+            <strong>YouTube Video Downloader</strong> &rarr; Save videos and audio streams
+          </a>
+        </div>
+      </div>
+    </article>
+  </section>
 </div>
 {% endblock %}
 
